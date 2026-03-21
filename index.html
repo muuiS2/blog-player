@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>My Blog Player</title>
+</head>
+
+<body style="margin:0; overflow:hidden;">
+
+<!-- 🎵 유튜브 플레이어 (고정) -->
+<div style="
+position:fixed;
+bottom:10px;
+left:10px;
+z-index:9999;
+background:white;
+padding:5px;
+border-radius:10px;
+">
+  <iframe 
+    width="220" height="124"
+    src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&loop=1"
+    frameborder="0"
+    allow="autoplay"
+  ></iframe>
+</div>
+
+<!-- 📄 FC2 블로그 전체 -->
+<iframe 
+  src="https://ourazem.blog.fc2.com/"
+  style="
+  width:100%;
+  height:100vh;
+  border:none;
+  ">
+</iframe>
+
+</body>
+</html>
