@@ -10,14 +10,12 @@ body {
   overflow: hidden;
 }
 
-/* 📄 블로그 */
 .blog-frame {
   width: 100vw;
   height: 100vh;
   border: none;
 }
 
-/* 🎧 미니 플레이어 */
 .player {
   position: fixed;
   right: 20px;
@@ -30,17 +28,14 @@ body {
   z-index: 9999;
   transition: 0.3s;
   color: #fff;
-  font-size: 12px;
 }
 
-/* 펼쳐진 상태 */
 .player.open {
   width: 260px;
-  height: 320px;
+  height: 300px;
   border-radius: 15px;
 }
 
-/* 버튼 */
 .toggle {
   width: 60px;
   height: 60px;
@@ -50,7 +45,6 @@ body {
   cursor: pointer;
 }
 
-/* 콘텐츠 */
 .content {
   display: none;
   padding: 10px;
@@ -60,40 +54,23 @@ body {
   display: block;
 }
 
-/* iframe */
 .player iframe {
   width: 100%;
-  height: 140px;
+  height: 150px;
   border: none;
 }
 
-/* 플레이리스트 */
-.playlist {
-  margin-top: 10px;
-  max-height: 120px;
-  overflow-y: auto;
-}
-
-.track {
-  padding: 5px;
-  cursor: pointer;
-}
-
-.track:hover {
-  background: #333;
-}
-
-/* 버튼들 */
 .controls {
   display: flex;
   justify-content: space-between;
   margin-top: 5px;
 }
+
 button {
   background: #222;
   color: #fff;
   border: none;
-  padding: 3px 6px;
+  padding: 5px;
   cursor: pointer;
 }
 </style>
@@ -112,61 +89,33 @@ button {
 
   <div class="content">
 
-    <iframe id="ytplayer"></iframe>
+    <iframe 
+      id="ytplayer"
+      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1"
+      allow="autoplay">
+    </iframe>
 
     <div class="controls">
       <button onclick="shuffle()">🔀</button>
       <button onclick="togglePlayer()">✖</button>
     </div>
 
-    <div class="playlist" id="playlist"></div>
-
   </div>
 </div>
 
 <script>
-const videos = [
-  "dQw4w9WgXcQ",
-  "3JZ_D3ELwOQ",
-  "L_jWHffIx5E",
-  "Zi_XLOBDo_Y"
-];
-
-let current = 0;
-
-function loadVideo(id) {
-  document.getElementById("ytplayer").src =
-    "https://www.youtube.com/embed/" + id + "?autoplay=1";
-}
-
-function renderList() {
-  const list = document.getElementById("playlist");
-  list.innerHTML = "";
-  videos.forEach((v, i) => {
-    const div = document.createElement("div");
-    div.className = "track";
-    div.innerText = "Track " + (i+1);
-    div.onclick = () => {
-      current = i;
-      loadVideo(v);
-    };
-    list.appendChild(div);
-  });
-}
-
-function shuffle() {
-  current = Math.floor(Math.random() * videos.length);
-  loadVideo(videos[current]);
-}
-
 function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
 
-// 초기 실행
-renderList();
-loadVideo(videos[0]);
+/* 🔀 랜덤 (플레이리스트 새로 로드해서 셔플 느낌) */
+function shuffle() {
+  const iframe = document.getElementById("ytplayer");
+  iframe.src =
+    "https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&shuffle=1";
+}
 </script>
 
 </body>
 </html>
+
