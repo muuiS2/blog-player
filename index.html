@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>My Blog Player</title>
+<title>Mini Player Blog</title>
 
 <style>
 body {
@@ -17,34 +17,84 @@ body {
   border: none;
 }
 
-/* 🎵 플레이어 (겹치기) */
-.yt-box {
+/* 🎧 미니 플레이어 */
+.player {
   position: fixed;
   right: 20px;
-  top: 300px;
-  width: 220px;
-  z-index: 9999;
-  border-radius: 10px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+  background: #111;
+  border-radius: 50%;
   overflow: hidden;
-  background: #000;
-}
-
-/* 접기 버튼 */
-.yt-toggle {
-  position: absolute;
-  top: -35px;
-  right: 0;
-  background: #222;
+  z-index: 9999;
+  transition: 0.3s;
   color: #fff;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
   font-size: 12px;
 }
 
-/* 접기 상태 */
-.yt-box.closed iframe {
+/* 펼쳐진 상태 */
+.player.open {
+  width: 260px;
+  height: 320px;
+  border-radius: 15px;
+}
+
+/* 버튼 */
+.toggle {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 콘텐츠 */
+.content {
   display: none;
+  padding: 10px;
+}
+
+.player.open .content {
+  display: block;
+}
+
+/* iframe */
+.player iframe {
+  width: 100%;
+  height: 140px;
+  border: none;
+}
+
+/* 플레이리스트 */
+.playlist {
+  margin-top: 10px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.track {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.track:hover {
+  background: #333;
+}
+
+/* 버튼들 */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+button {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 3px 6px;
+  cursor: pointer;
 }
 </style>
 
@@ -53,31 +103,69 @@ body {
 <body>
 
 <!-- 📄 블로그 -->
-<iframe 
-  src="https://ourazem.blog.fc2.com/" 
-  class="blog-frame">
-</iframe>
+<iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
 
-<!-- 🎵 유튜브 (항상 유지됨) -->
-<div class="yt-box" id="ytBox">
+<!-- 🎧 플레이어 -->
+<div class="player" id="player">
 
-  <button class="yt-toggle" onclick="toggleYT()">접기</button>
+  <div class="toggle" onclick="togglePlayer()">🎵</div>
 
-  <iframe 
-    src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1&playlist=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq"
-    width="220"
-    height="124"
-    frameborder="0"
-    allow="autoplay">
-  </iframe>
+  <div class="content">
 
+    <iframe id="ytplayer"></iframe>
+
+    <div class="controls">
+      <button onclick="shuffle()">🔀</button>
+      <button onclick="togglePlayer()">✖</button>
+    </div>
+
+    <div class="playlist" id="playlist"></div>
+
+  </div>
 </div>
 
 <script>
-function toggleYT() {
-  const box = document.getElementById("ytBox");
-  box.classList.toggle("closed");
+const videos = [
+  "dQw4w9WgXcQ",
+  "3JZ_D3ELwOQ",
+  "L_jWHffIx5E",
+  "Zi_XLOBDo_Y"
+];
+
+let current = 0;
+
+function loadVideo(id) {
+  document.getElementById("ytplayer").src =
+    "https://www.youtube.com/embed/" + id + "?autoplay=1";
 }
+
+function renderList() {
+  const list = document.getElementById("playlist");
+  list.innerHTML = "";
+  videos.forEach((v, i) => {
+    const div = document.createElement("div");
+    div.className = "track";
+    div.innerText = "Track " + (i+1);
+    div.onclick = () => {
+      current = i;
+      loadVideo(v);
+    };
+    list.appendChild(div);
+  });
+}
+
+function shuffle() {
+  current = Math.floor(Math.random() * videos.length);
+  loadVideo(videos[current]);
+}
+
+function togglePlayer() {
+  document.getElementById("player").classList.toggle("open");
+}
+
+// 초기 실행
+renderList();
+loadVideo(videos[0]);
 </script>
 
 </body>
