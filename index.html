@@ -16,26 +16,29 @@ body {
   border: none;
 }
 
+/* 🎧 플레이어 */
 .player {
   position: fixed;
   right: 20px;
   bottom: 20px;
   width: 60px;
   height: 60px;
-  background: #111;
+  background: #dcdcdc; /* 연회색 */
   border-radius: 50%;
   overflow: hidden;
   z-index: 9999;
   transition: 0.3s;
-  color: #fff;
+  color: #555;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .player.open {
   width: 260px;
-  height: 300px;
+  height: 260px;
   border-radius: 15px;
 }
 
+/* 버튼 */
 .toggle {
   width: 60px;
   height: 60px;
@@ -43,8 +46,10 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 20px;
 }
 
+/* 내용 */
 .content {
   display: none;
   padding: 10px;
@@ -54,24 +59,24 @@ body {
   display: block;
 }
 
+/* 유튜브 */
 .player iframe {
   width: 100%;
   height: 150px;
   border: none;
+  border-radius: 8px;
 }
 
-.controls {
-  display: flex;
-  justify-content: space-between;
+/* 닫기 버튼 */
+.close-btn {
   margin-top: 5px;
-}
-
-button {
-  background: #222;
-  color: #fff;
+  width: 100%;
+  background: #cfcfcf;
+  color: #444;
   border: none;
   padding: 5px;
   cursor: pointer;
+  border-radius: 5px;
 }
 </style>
 
@@ -85,20 +90,16 @@ button {
 <!-- 🎧 플레이어 -->
 <div class="player" id="player">
 
-  <div class="toggle" onclick="togglePlayer()">🎵</div>
+  <div class="toggle" onclick="togglePlayer()">♬</div>
 
   <div class="content">
 
     <iframe 
-      id="ytplayer"
       src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1"
       allow="autoplay">
     </iframe>
 
-    <div class="controls">
-      <button onclick="shuffle()">🔀</button>
-      <button onclick="togglePlayer()">✖</button>
-    </div>
+    <button class="close-btn" onclick="togglePlayer()">닫기</button>
 
   </div>
 </div>
@@ -107,15 +108,7 @@ button {
 function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
-
-/* 🔀 랜덤 (플레이리스트 새로 로드해서 셔플 느낌) */
-function shuffle() {
-  const iframe = document.getElementById("ytplayer");
-  iframe.src =
-    "https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&shuffle=1";
-}
 </script>
 
 </body>
 </html>
-
