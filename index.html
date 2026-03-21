@@ -7,56 +7,44 @@
 <style>
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* 📄 블로그 */
 .blog-frame {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   border: none;
 }
 
-/* 🎬 플레이어 (접이식) */
+/* 🎵 플레이어 (겹치기) */
 .yt-box {
   position: fixed;
-  right: 0;
-  top: 300px; /* 위치 조절 */
-  width: 60px;
-  transition: 0.3s;
+  right: 20px;
+  top: 300px;
+  width: 220px;
   z-index: 9999;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
 }
 
-/* 펼쳐짐 */
-.yt-box.open {
-  width: 260px;
-}
-
-/* 버튼 */
+/* 접기 버튼 */
 .yt-toggle {
-  width: 60px;
-  height: 60px;
-  cursor: pointer;
+  position: absolute;
+  top: -35px;
+  right: 0;
   background: #222;
   color: #fff;
   border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
-/* 영상 영역 */
-.yt-content {
+/* 접기 상태 */
+.yt-box.closed iframe {
   display: none;
-  background: #000;
-  padding: 5px;
-}
-
-.yt-box.open .yt-content {
-  display: block;
-}
-
-.yt-content iframe {
-  width: 100%;
-  height: 150px;
-  border: none;
 }
 </style>
 
@@ -70,24 +58,25 @@ body {
   class="blog-frame">
 </iframe>
 
-<!-- 🎬 접이식 유튜브 -->
+<!-- 🎵 유튜브 (항상 유지됨) -->
 <div class="yt-box" id="ytBox">
 
-  <button class="yt-toggle" onclick="toggleYT()">🎵</button>
+  <button class="yt-toggle" onclick="toggleYT()">접기</button>
 
-  <div class="yt-content">
-    <iframe 
-      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=1&loop=1&playlist=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq"
-      allow="autoplay">
-    </iframe>
-  </div>
+  <iframe 
+    src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1&playlist=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq"
+    width="220"
+    height="124"
+    frameborder="0"
+    allow="autoplay">
+  </iframe>
 
 </div>
 
 <script>
 function toggleYT() {
   const box = document.getElementById("ytBox");
-  box.classList.toggle("open");
+  box.classList.toggle("closed");
 }
 </script>
 
