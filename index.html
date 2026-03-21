@@ -23,13 +23,18 @@ body {
   bottom: 20px;
   width: 60px;
   height: 60px;
-  background: #dcdcdc; /* 연회색 */
+
+  background: rgba(220, 220, 220, 0.75); /* 반투명 */
+  backdrop-filter: blur(4px); /* 유리 느낌 */
+
   border-radius: 50%;
   overflow: hidden;
   z-index: 9999;
   transition: 0.3s;
   color: #555;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.4);
 }
 
 .player.open {
@@ -112,3 +117,5 @@ function togglePlayer() {
 
 </body>
 </html>
+
+
