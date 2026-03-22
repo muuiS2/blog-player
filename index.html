@@ -116,7 +116,100 @@ function togglePlayer() {
 }
 </script>
 
+
+<img id="shimeji" src="" style="
+  position: fixed;
+  width: 120px;
+  left: 100px;
+  top: 100px;
+  z-index: 9999;
+  pointer-events: none;
+">
+
+<script>
+// 🎨 이미지 넣는 곳 (여기만 수정!!)
+const sprites = {
+  down: [
+    "https://i.imgur.com/5JH2HqN.png",
+    "https://i.imgur.com/9IpmQaN.png",
+    "https://i.imgur.com/FJh2LPr.png"
+  ],
+  up: [
+    "https://i.imgur.com/eiulE3a.png",
+    "https://i.imgur.com/dAudV3g.png",
+    "https://i.imgur.com/wHNO6s0.png"
+  ],
+  left: [
+    "https://i.imgur.com/Rp4MyTo.png",
+    "https://i.imgur.com/dqR3wTc.png",
+    "https://i.imgur.com/sT4sYoE.png"
+  ],
+  right: [
+    "https://i.imgur.com/gfhylI8.png",
+    "https://i.imgur.com/AvUePs9.png",
+    "https://i.imgur.com/IIzugPg.png"
+  ]
+};
+
+const el = document.getElementById("shimeji");
+
+let x = 100;
+let y = 100;
+
+let dir = "right";
+let frame = 0;
+let state = "walk";
+
+// 🎲 랜덤 방향
+function randomDir() {
+  const dirs = ["up","down","left","right"];
+  return dirs[Math.floor(Math.random()*4)];
+}
+
+// 🎲 랜덤 상태 변경
+function randomState() {
+  if (Math.random() < 0.02) {
+    state = (state === "walk") ? "idle" : "walk";
+    if (state === "walk") dir = randomDir();
+  }
+}
+
+// 🎮 이동
+function move() {
+  if (state === "walk") {
+    if (dir === "right") x += 1;
+    if (dir === "left") x -= 1;
+    if (dir === "down") y += 1;
+    if (dir === "up") y -= 1;
+
+    // 화면 벽 처리
+    if (x < 0) x = 0;
+    if (x > window.innerWidth - 96) x = window.innerWidth - 96;
+    if (y < 0) y = 0;
+    if (y > window.innerHeight - 96) y = window.innerHeight - 96;
+
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+
+    // 걷기 애니메이션 (삐그덕 느낌)
+    frame++;
+    let f = frame % 3;
+    el.src = sprites[dir][f];
+  }
+
+  if (state === "idle") {
+    el.src = sprites[dir][0]; // 정지
+  }
+
+  randomState();
+}
+
+// ⏱ 실행
+setInterval(move, 120); // ← 숫자 크면 더 "도트스럽게" 끊김 느낌
+</script>
+  
 </body>
 </html>
+
 
 
