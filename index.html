@@ -187,9 +187,16 @@ function randomState() {
   }
 }
 
+if (dir !== prevDir) {
+  frame = 0;
+  prevDir = dir;
+}
+  
 // 🎮 이동
 function move() {
 
+let prevDir = dir;
+  
   if (dragging) {
     // 버둥 애니
     frame++;
@@ -213,8 +220,8 @@ function move() {
     el.style.left = x + "px";
     el.style.top = y + "px";
 
-    frame++;
-    el.src = sprites[dir][frame % 3];
+let anim = frame % 3;
+el.src = sprites[dir][anim];
   }
 
   if (state === "sit") {
@@ -226,18 +233,21 @@ function move() {
   if (!sleepStarted) {
     sleepFrame = 0;
     sleepStarted = true;
+    el.src = sprites.sleep[0]; // ⭐ 첫 프레임 강제 표시
+    return;
   }
 
   frame++;
 
-  // 💡 속도 조절 (숫자 클수록 느림)
   if (frame % 15 === 0) {
 
-    sleepFrame++;
-
-    // 0 → 1 → 2 → 3 → 4 → 이후 2~4 반복
-    if (sleepFrame >= 5) {
-      sleepFrame = 2;
+    // ⭐ 1,2는 한 번씩만
+    if (sleepFrame < 2) {
+      sleepFrame++;
+    } else {
+      // ⭐ 3~5 반복
+      sleepFrame++;
+      if (sleepFrame >= 5) sleepFrame = 2;
     }
 
     el.src = sprites.sleep[sleepFrame];
@@ -247,6 +257,11 @@ function move() {
   randomState();
 }
 
+
+if (state !== "sleep") {
+  sleepStarted = false;
+}
+  
 // 🖱️ 클릭 잡기
 el.onmousedown = (e) => {
   dragging = true;
@@ -255,6 +270,7 @@ el.onmousedown = (e) => {
 
 // 🖱️ 놓기 → 떨어지기
 window.onmouseup = () => {
+
   if (!dragging) return;
 
   dragging = false;
@@ -302,5 +318,10 @@ let sleepStarted = false;
 if (state !== "sleep") {
   sleepStarted = false;
 }
-  
+
+
+<script>
+function togglePlayer() {
+  document.getElementById("player").classList.toggle("open");
+}
 </script>
