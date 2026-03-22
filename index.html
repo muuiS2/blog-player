@@ -110,41 +110,35 @@ body {
   </div>
 </div>
 
+//여기서 부터 시메지
+  
 <img id="shimeji" src="" style="
   position: fixed;
   width: 120px;
   left: 100px;
   top: 100px;
   z-index: 9999;
-  pointer-events: none;
+  cursor: grab;
 ">
 
 <script>
-// 🎨 이미지 설정 (완전한 구조로 다시 정리)
+// 🎨 이미지 설정
 const sprites = {
-  down: [
-    "https://i.imgur.com/5JH2HqN.png",
-    "https://i.imgur.com/9IpmQaN.png",
-    "https://i.imgur.com/FJh2LPr.png"
+  down: ["https://i.imgur.com/5JH2HqN.png","https://i.imgur.com/9IpmQaN.png","https://i.imgur.com/FJh2LPr.png"],
+  up: ["https://i.imgur.com/Rp4MyTo.png","https://i.imgur.com/dqR3wTc.png","https://i.imgur.com/sT4sYoE.png"],
+  left: ["https://i.imgur.com/AvUePs9.png1","","https://i.imgur.com/gfhylI8.png"],
+  right: ["https://i.imgur.com/dAudV3g.png","https://i.imgur.com/wHNO6s0.png","https://i.imgur.com/eiulE3a.png"],
+
+  sit: ["https://i.imgur.com/9va1waE.png"],
+  sleep: [
+    "https://i.imgur.com/X080JsG.png","https://i.imgur.com/xf11w31.png","https://i.imgur.com/DuInk1S.png","https://i.imgur.com/xOfN292.png","https://i.imgur.com/cPNTADo.png"
   ],
-  up: [
-    "https://i.imgur.com/eiulE3a.png",
-    "https://i.imgur.com/dAudV3g.png",
-    "https://i.imgur.com/wHNO6s0.png"
-  ],
-  left: [
-    "https://i.imgur.com/Rp4MyTo.png",
-    "https://i.imgur.com/dqR3wTc.png",
-    "https://i.imgur.com/sT4sYoE.png"
-  ],
-  right: [
-    "https://i.imgur.com/gfhylI8.png",
-    "https://i.imgur.com/AvUePs9.png",
-    "https://i.imgur.com/IIzugPg.png"
-  ]
+
+  struggle: ["https://i.imgur.com/eSQvjZg.png","https://i.imgur.com/EjO1hB6.png"],
+  fall: ["https://i.imgur.com/nSgLstM.png"]
 };
 
-// 🔥 이미지 미리 로딩 (깜빡임 해결)
+// 🔥 preload
 Object.values(sprites).flat().forEach(src => {
   const img = new Image();
   img.src = src;
@@ -159,17 +153,21 @@ let dir = "right";
 let frame = 0;
 let state = "walk";
 
-// 🔥 방향 유지 시간
 let dirTimer = 0;
 
-// 🎲 랜덤 방향
+// 🖱️ 드래그 상태
+let dragging = false;
+
+// 🎲 방향
 function randomDir() {
   const dirs = ["up","down","left","right"];
   return dirs[Math.floor(Math.random()*4)];
 }
 
-// 🎲 상태 + 방향 관리
+// 🎲 상태 변경
 function randomState() {
+  if (dragging) return;
+
   dirTimer--;
 
   if (dirTimer <= 0) {
@@ -177,13 +175,30 @@ function randomState() {
     dirTimer = Math.floor(Math.random() * 100) + 50;
   }
 
-  if (Math.random() < 0.01) {
-    state = (state === "walk") ? "idle" : "walk";
+  // 앉기 확률
+  if (Math.random() < 0.005) {
+    state = "sit";
+    setTimeout(() => {
+      state = "sleep";
+    }, 2000);
+  }
+
+  // 다시 걷기
+  if (Math.random() < 0.01 && state !== "sleep") {
+    state = "walk";
   }
 }
 
 // 🎮 이동
 function move() {
+
+  if (dragging) {
+    // 버둥 애니
+    frame++;
+    el.src = sprites.struggle[frame % 2];
+    return;
+  }
+
   if (state === "walk") {
 
     if (dir === "right") x += 1;
@@ -191,7 +206,7 @@ function move() {
     if (dir === "down") y += 1;
     if (dir === "up") y -= 1;
 
-    // 🧱 벽 충돌 시 방향 전환
+    // 벽
     if (x <= 0) dir = "right";
     if (x >= window.innerWidth - 120) dir = "left";
     if (y <= 0) dir = "down";
@@ -200,18 +215,66 @@ function move() {
     el.style.left = x + "px";
     el.style.top = y + "px";
 
-    // 🦶 걷기 애니메이션
     frame++;
-    let f = frame % 3;
-    el.src = sprites[dir][f];
+    el.src = sprites[dir][frame % 3];
   }
 
-  if (state === "idle") {
-    el.src = sprites[dir][0]; // 정지 이미지
+  if (state === "sit") {
+    el.src = sprites.sit[0];
+  }
+
+  if (state === "sleep") {
+    frame++;
+    el.src = sprites.sleep[frame % sprites.sleep.length];
   }
 
   randomState();
 }
+
+// 🖱️ 클릭 잡기
+el.onmousedown = (e) => {
+  dragging = true;
+  el.style.cursor = "grabbing";
+};
+
+// 🖱️ 놓기 → 떨어지기
+window.onmouseup = () => {
+  if (!dragging) return;
+
+  dragging = false;
+  el.style.cursor = "grab";
+
+  state = "fall";
+
+  let fallY = y;
+  let target = y + 100;
+
+  function falling() {
+    fallY += 5;
+    el.src = sprites.fall[0];
+    el.style.top = fallY + "px";
+
+    if (fallY < target) {
+      requestAnimationFrame(falling);
+    } else {
+      y = fallY;
+      state = "walk";
+    }
+  }
+
+  falling();
+};
+
+// 🖱️ 드래그 이동
+window.onmousemove = (e) => {
+  if (!dragging) return;
+
+  x = e.clientX - 60;
+  y = e.clientY - 60;
+
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+};
 
 // ⏱ 실행
 setInterval(move, 120);
