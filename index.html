@@ -24,7 +24,6 @@ body {
   height: 60px;
 
   background: rgba(220, 220, 220, 0.75); /* 반투명 */
-  backdrop-filter: blur(4px); /* 유리 느낌 */
 
   border-radius: 50%;
   overflow: hidden;
@@ -109,8 +108,6 @@ body {
 
   </div>
 </div>
-
-//여기서 부터 시메지
   
 <img id="shimeji" src="" style="
   position: fixed;
@@ -121,12 +118,13 @@ body {
   cursor: grab;
 ">
 
+  
 <script>
 // 🎨 이미지 설정
 const sprites = {
   down: ["https://i.imgur.com/5JH2HqN.png","https://i.imgur.com/9IpmQaN.png","https://i.imgur.com/FJh2LPr.png"],
   up: ["https://i.imgur.com/Rp4MyTo.png","https://i.imgur.com/dqR3wTc.png","https://i.imgur.com/sT4sYoE.png"],
-  left: ["https://i.imgur.com/AvUePs9.png1","","https://i.imgur.com/gfhylI8.png"],
+  left: ["https://i.imgur.com/AvUePs9.png","","https://i.imgur.com/gfhylI8.png"],
   right: ["https://i.imgur.com/dAudV3g.png","https://i.imgur.com/wHNO6s0.png","https://i.imgur.com/eiulE3a.png"],
 
   sit: ["https://i.imgur.com/9va1waE.png"],
@@ -224,9 +222,27 @@ function move() {
   }
 
   if (state === "sleep") {
-    frame++;
-    el.src = sprites.sleep[frame % sprites.sleep.length];
+
+  if (!sleepStarted) {
+    sleepFrame = 0;
+    sleepStarted = true;
   }
+
+  frame++;
+
+  // 💡 속도 조절 (숫자 클수록 느림)
+  if (frame % 15 === 0) {
+
+    sleepFrame++;
+
+    // 0 → 1 → 2 → 3 → 4 → 이후 2~4 반복
+    if (sleepFrame >= 5) {
+      sleepFrame = 2;
+    }
+
+    el.src = sprites.sleep[sleepFrame];
+  }
+}
 
   randomState();
 }
@@ -278,4 +294,13 @@ window.onmousemove = (e) => {
 
 // ⏱ 실행
 setInterval(move, 120);
+
+  let sleepFrame = 0;
+let sleepStarted = false;
+
+  
+if (state !== "sleep") {
+  sleepStarted = false;
+}
+  
 </script>
