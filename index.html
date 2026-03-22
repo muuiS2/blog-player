@@ -118,18 +118,21 @@ body {
   cursor: grab;
 ">
 
-  
 <script>
 // 🎨 이미지 설정
 const sprites = {
   down: ["https://i.imgur.com/5JH2HqN.png","https://i.imgur.com/9IpmQaN.png","https://i.imgur.com/FJh2LPr.png"],
   up: ["https://i.imgur.com/Rp4MyTo.png","https://i.imgur.com/dqR3wTc.png","https://i.imgur.com/sT4sYoE.png"],
-  left: ["https://i.imgur.com/AvUePs9.png","","https://i.imgur.com/gfhylI8.png"],
+  left: ["https://i.imgur.com/AvUePs9.png","https://i.imgur.com/IIzugPg.png","https://i.imgur.com/gfhylI8.png"],
   right: ["https://i.imgur.com/dAudV3g.png","https://i.imgur.com/wHNO6s0.png","https://i.imgur.com/eiulE3a.png"],
 
   sit: ["https://i.imgur.com/9va1waE.png"],
   sleep: [
-    "https://i.imgur.com/X080JsG.png","https://i.imgur.com/xf11w31.png","https://i.imgur.com/DuInk1S.png","https://i.imgur.com/xOfN292.png","https://i.imgur.com/cPNTADo.png"
+    "https://i.imgur.com/X080JsG.png",
+    "https://i.imgur.com/xf11w31.png",
+    "https://i.imgur.com/DuInk1S.png",
+    "https://i.imgur.com/xOfN292.png",
+    "https://i.imgur.com/cPNTADo.png"
   ],
 
   struggle: ["https://i.imgur.com/eSQvjZg.png","https://i.imgur.com/EjO1hB6.png"],
@@ -148,13 +151,16 @@ let x = 100;
 let y = 100;
 
 let dir = "right";
+let prevDir = "right";
 let frame = 0;
 let state = "walk";
 
 let dirTimer = 0;
-
-// 🖱️ 드래그 상태
 let dragging = false;
+
+// 😴 sleep 전용
+let sleepFrame = 0;
+let sleepStarted = false;
 
 // 🎲 방향
 function randomDir() {
@@ -173,32 +179,31 @@ function randomState() {
     dirTimer = Math.floor(Math.random() * 100) + 50;
   }
 
-  // 앉기 확률
   if (Math.random() < 0.005) {
     state = "sit";
-    setTimeout(() => {
-      state = "sleep";
-    }, 2000);
+    setTimeout(() => state = "sleep", 2000);
   }
 
-  // 다시 걷기
   if (Math.random() < 0.01 && state !== "sleep") {
     state = "walk";
   }
+
+  // sleep 종료 시 초기화
+  if (state !== "sleep") {
+    sleepStarted = false;
+  }
 }
 
-if (dir !== prevDir) {
-  frame = 0;
-  prevDir = dir;
-}
-  
 // 🎮 이동
 function move() {
 
-let prevDir = dir;
-  
+  // 방향 바뀌면 프레임 초기화
+  if (dir !== prevDir) {
+    frame = 0;
+    prevDir = dir;
+  }
+
   if (dragging) {
-    // 버둥 애니
     frame++;
     el.src = sprites.struggle[frame % 2];
     return;
@@ -211,7 +216,7 @@ let prevDir = dir;
     if (dir === "down") y += 1;
     if (dir === "up") y -= 1;
 
-    // 벽
+    // 벽 충돌
     if (x <= 0) dir = "right";
     if (x >= window.innerWidth - 120) dir = "left";
     if (y <= 0) dir = "down";
@@ -220,8 +225,8 @@ let prevDir = dir;
     el.style.left = x + "px";
     el.style.top = y + "px";
 
-let anim = frame % 3;
-el.src = sprites[dir][anim];
+    frame++;
+    el.src = sprites[dir][frame % 3];
   }
 
   if (state === "sit") {
@@ -230,47 +235,39 @@ el.src = sprites[dir][anim];
 
   if (state === "sleep") {
 
-  if (!sleepStarted) {
-    sleepFrame = 0;
-    sleepStarted = true;
-    el.src = sprites.sleep[0]; // ⭐ 첫 프레임 강제 표시
-    return;
-  }
-
-  frame++;
-
-  if (frame % 15 === 0) {
-
-    // ⭐ 1,2는 한 번씩만
-    if (sleepFrame < 2) {
-      sleepFrame++;
-    } else {
-      // ⭐ 3~5 반복
-      sleepFrame++;
-      if (sleepFrame >= 5) sleepFrame = 2;
+    if (!sleepStarted) {
+      sleepFrame = 0;
+      sleepStarted = true;
+      el.src = sprites.sleep[0];
+      return;
     }
 
-    el.src = sprites.sleep[sleepFrame];
+    frame++;
+
+    if (frame % 15 === 0) {
+
+      if (sleepFrame < 2) {
+        sleepFrame++;
+      } else {
+        sleepFrame++;
+        if (sleepFrame >= 5) sleepFrame = 2;
+      }
+
+      el.src = sprites.sleep[sleepFrame];
+    }
   }
-}
 
   randomState();
 }
 
-
-if (state !== "sleep") {
-  sleepStarted = false;
-}
-  
-// 🖱️ 클릭 잡기
-el.onmousedown = (e) => {
+// 🖱️ 잡기
+el.onmousedown = () => {
   dragging = true;
   el.style.cursor = "grabbing";
 };
 
-// 🖱️ 놓기 → 떨어지기
+// 🖱️ 놓기
 window.onmouseup = () => {
-
   if (!dragging) return;
 
   dragging = false;
@@ -308,19 +305,10 @@ window.onmousemove = (e) => {
   el.style.top = y + "px";
 };
 
-// ⏱ 실행
+// ▶ 실행
 setInterval(move, 120);
 
-  let sleepFrame = 0;
-let sleepStarted = false;
-
-  
-if (state !== "sleep") {
-  sleepStarted = false;
-}
-
-
-<script>
+// 🎵 플레이어 버튼 (반드시 따로!)
 function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
