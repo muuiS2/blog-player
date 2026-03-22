@@ -110,13 +110,6 @@ body {
   </div>
 </div>
 
-<script>
-function togglePlayer() {
-  document.getElementById("player").classList.toggle("open");
-}
-</script>
-
-
 <img id="shimeji" src="" style="
   position: fixed;
   width: 120px;
@@ -127,7 +120,7 @@ function togglePlayer() {
 ">
 
 <script>
-// 🎨 이미지 넣는 곳 (여기만 수정!!)
+// 🎨 이미지 설정 (완전한 구조로 다시 정리)
 const sprites = {
   down: [
     "https://i.imgur.com/5JH2HqN.png",
@@ -151,6 +144,12 @@ const sprites = {
   ]
 };
 
+// 🔥 이미지 미리 로딩 (깜빡임 해결)
+Object.values(sprites).flat().forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
 const el = document.getElementById("shimeji");
 
 let x = 100;
@@ -160,56 +159,60 @@ let dir = "right";
 let frame = 0;
 let state = "walk";
 
+// 🔥 방향 유지 시간
+let dirTimer = 0;
+
 // 🎲 랜덤 방향
 function randomDir() {
   const dirs = ["up","down","left","right"];
   return dirs[Math.floor(Math.random()*4)];
 }
 
-// 🎲 랜덤 상태 변경
+// 🎲 상태 + 방향 관리
 function randomState() {
-  if (Math.random() < 0.02) {
+  dirTimer--;
+
+  if (dirTimer <= 0) {
+    dir = randomDir();
+    dirTimer = Math.floor(Math.random() * 100) + 50;
+  }
+
+  if (Math.random() < 0.01) {
     state = (state === "walk") ? "idle" : "walk";
-    if (state === "walk") dir = randomDir();
   }
 }
 
 // 🎮 이동
 function move() {
   if (state === "walk") {
+
     if (dir === "right") x += 1;
     if (dir === "left") x -= 1;
     if (dir === "down") y += 1;
     if (dir === "up") y -= 1;
 
-    // 화면 벽 처리
-    if (x < 0) x = 0;
-    if (x > window.innerWidth - 96) x = window.innerWidth - 96;
-    if (y < 0) y = 0;
-    if (y > window.innerHeight - 96) y = window.innerHeight - 96;
+    // 🧱 벽 충돌 시 방향 전환
+    if (x <= 0) dir = "right";
+    if (x >= window.innerWidth - 120) dir = "left";
+    if (y <= 0) dir = "down";
+    if (y >= window.innerHeight - 120) dir = "up";
 
     el.style.left = x + "px";
     el.style.top = y + "px";
 
-    // 걷기 애니메이션 (삐그덕 느낌)
+    // 🦶 걷기 애니메이션
     frame++;
     let f = frame % 3;
     el.src = sprites[dir][f];
   }
 
   if (state === "idle") {
-    el.src = sprites[dir][0]; // 정지
+    el.src = sprites[dir][0]; // 정지 이미지
   }
 
   randomState();
 }
 
 // ⏱ 실행
-setInterval(move, 120); // ← 숫자 크면 더 "도트스럽게" 끊김 느낌
+setInterval(move, 120);
 </script>
-  
-</body>
-</html>
-
-
-
