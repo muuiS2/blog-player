@@ -108,7 +108,9 @@ body {
 
   </div>
 </div>
-  
+
+
+ <!-- 시메지 --> 
 <img id="shimeji" src="" style="
   position: fixed;
   width: 120px;
@@ -162,6 +164,8 @@ let dragging = false;
 let sleepFrame = 0;
 let sleepStarted = false;
 
+let turnDelay = 5;
+
 // 🎲 방향
 function randomDir() {
   const dirs = ["up","down","left","right"];
@@ -198,10 +202,11 @@ function randomState() {
 function move() {
 
   // 방향 바뀌면 프레임 초기화
-  if (dir !== prevDir) {
-    frame = 0;
-    prevDir = dir;
-  }
+ if (dir !== prevDir) {
+  frame = 0;
+  prevDir = dir;
+  turnDelay = 5; // ⭐ 방향 바뀌면 잠깐 멈춤
+}
 
   if (dragging) {
     frame++;
@@ -211,6 +216,12 @@ function move() {
 
   if (state === "walk") {
 
+    if (turnDelay > 0) {
+  turnDelay--;
+  el.src = sprites[dir][0]; // 정지 이미지
+  return;
+    }
+    
     if (dir === "right") x += 1;
     if (dir === "left") x -= 1;
     if (dir === "down") y += 1;
