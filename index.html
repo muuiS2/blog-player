@@ -73,14 +73,84 @@ body {
   border-radius: 8px;
 }
 
-/* 닫기 버튼 */
+/* 🎧 플레이어 */
+.player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+
+  background: rgba(220, 220, 220, 0.75);
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 9999;
+  transition: 0.3s;
+  color: #555;
+
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+/* 펼쳤을 때 */
+.player.open {
+  width: 260px;
+  height: 320px;
+  border-radius: 15px;
+  background: rgba(220, 220, 220, 0.9);
+}
+
+/* 버튼 */
+.toggle {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* 내용 */
+.content {
+  display: none;
+  padding: 10px;
+}
+
+.player.open .content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 유튜브 */
+.player iframe {
+  width: 100%;
+  height: 150px;
+  border: none;
+  border-radius: 8px;
+}
+
+/* 🎚 볼륨 슬라이더 */
+.volume-box {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volume-box input {
+  width: 100%;
+}
+
+/* 닫기 버튼 (항상 아래 고정) */
 .close-btn {
-  margin-top: 5px;
+  margin-top: auto;
   width: 100%;
   background: #cfcfcf;
   color: #444;
   border: none;
-  padding: 5px;
+  padding: 6px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -100,10 +170,17 @@ body {
 
   <div class="content">
 
-<iframe 
-  src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&controls=1&mute=0"
-  allow="autoplay">
-</iframe>
+    <iframe 
+      id="ytplayer"
+      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&autoplay=1"
+      allow="autoplay">
+    </iframe>
+
+    <!-- 🎚 볼륨 -->
+    <div class="volume-box">
+      🔊
+      <input type="range" min="0" max="100" value="50" id="volumeSlider">
+    </div>
 
     <button class="close-btn" onclick="togglePlayer()">닫기</button>
 
@@ -325,3 +402,27 @@ function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
 </script>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+let player;
+
+// 유튜브 API 준비
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('ytplayer');
+}
+
+// 볼륨 조절
+document.getElementById("volumeSlider").addEventListener("input", function() {
+  if (player) {
+    player.setVolume(this.value);
+  }
+});
+
+// 플레이어 열기/닫기
+function togglePlayer() {
+  document.getElementById("player").classList.toggle("open");
+}
+</script>
+  
