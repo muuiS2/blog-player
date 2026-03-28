@@ -17,95 +17,82 @@ body {
 }
 
 /* 🎧 플레이어 */
-.player {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: 60px;
-  height: 60px;
-
-  background: rgba(200, 200, 200, 0.7);
-  border-radius: 50%;
-  overflow: hidden;
-  z-index: 9999;
-  transition: 0.3s;
-
-  backdrop-filter: blur(6px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-/* 펼쳤을 때 */
 .player.open {
-  width: 260px;
-  height: 240px;
-  border-radius: 12px;
+  width: 340px;
+  height: 180px;
+  border-radius: 16px;
   background: rgba(220, 220, 220, 0.9);
+  padding: 12px;
 }
 
-/* 상단 바 */
-.player-header {
-  display: none;
-}
-
-.player.open .player-header {
+/* 내부 레이아웃 */
+.player-ui {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 10px;
-  font-size: 14px;
-  color: #555;
+  gap: 12px;
 }
 
-/* 최소화 버튼 */
-.min-btn {
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* 토글 버튼 */
-.toggle {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* 내용 */
-.content {
-  display: none;
-  padding: 8px;
-}
-
-.player.open .content {
-  display: block;
-}
-
-/* 유튜브 */
+/* 유튜브 정사각형 */
 .player iframe {
-  width: 100%;
+  width: 120px;
   height: 120px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-/* 🎚 감성 볼륨 */
-.volume-box {
-  margin-top: 8px;
+/* 오른쪽 영역 */
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 텍스트 */
+.title {
+  font-size: 13px;
+  color: #444;
+}
+
+.artist {
+  font-size: 11px;
+  color: #777;
+}
+
+/* 컨트롤 */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.controls button {
+  border: none;
+  background: #ddd;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 볼륨 */
+.volume {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-/* 슬라이더 커스텀 */
-.volume-box input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 4px;
+.volume button {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  padding: 0;
+}
+
+/* 하단 바 (감성용) */
+.progress {
+  height: 3px;
   background: #bbb;
-  border-radius: 5px;
-  outline: none;
+  border-radius: 3px;
+  margin-top: 8px;
 }
 
 /* 동그라미 */
@@ -135,23 +122,50 @@ body {
 <!-- 🎧 플레이어 -->
 <div class="player" id="player">
 
-<div class="toggle" id="musicToggle" onclick="togglePlayer()">♬</div>
+  <!-- 접힌 상태 -->
+  <div class="toggle" onclick="togglePlayer()">♬</div>
+
+  <!-- 펼친 상태 -->
+  <div class="player-header">
+    <span>music</span>
+    <span class="min-btn" onclick="togglePlayer()">–</span>
+  </div>
 
   <div class="content">
 
-    <iframe 
-      id="ytplayer"
-      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&autoplay=1"
-      allow="autoplay">
-    </iframe>
+    <div class="player-ui">
 
-    <!-- 🎚 볼륨 -->
-    <div class="volume-box">
-      🔊
-      <input type="range" min="0" max="100" value="50" id="volumeSlider">
+      <!-- 🎬 유튜브 -->
+      <iframe 
+        id="ytplayer"
+        src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
+        allow="autoplay">
+      </iframe>
+
+      <!-- 🎵 정보 -->
+      <div class="info">
+
+        <div>
+          <div class="title">Nostalgia Room</div>
+          <div class="artist">playlist</div>
+        </div>
+
+        <!-- ▶ 컨트롤 -->
+        <div class="controls">
+          <button onclick="playVideo()">▶</button>
+          <button onclick="pauseVideo()">⏸</button>
+
+          <div class="volume">
+            <button onclick="volDown()">-</button>
+            <button onclick="volUp()">+</button>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <button class="close-btn" onclick="togglePlayer()">닫기</button>
+    <!-- 감성 바 -->
+    <div class="progress"></div>
 
   </div>
 </div>
@@ -386,24 +400,41 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-// 🎵 재생 상태 감지
-function onPlayerStateChange(event) {
-  const el = document.getElementById("player");
+<script src="https://www.youtube.com/iframe_api"></script>
 
-  // 재생 중
-  if (event.data === YT.PlayerState.PLAYING) {
-    el.classList.add("playing");
-  } else {
-    el.classList.remove("playing");
+<script>
+let player;
+let currentVolume = 50;
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('ytplayer');
+}
+
+// ▶ 재생
+function playVideo() {
+  if (player) player.playVideo();
+}
+
+// ⏸ 정지
+function pauseVideo() {
+  if (player) player.pauseVideo();
+}
+
+// 🔊 볼륨 +
+function volUp() {
+  if (player) {
+    currentVolume = Math.min(100, currentVolume + 10);
+    player.setVolume(currentVolume);
   }
 }
 
-// 🎚 볼륨
-document.getElementById("volumeSlider").addEventListener("input", function() {
+// 🔉 볼륨 -
+function volDown() {
   if (player) {
-    player.setVolume(this.value);
+    currentVolume = Math.max(0, currentVolume - 10);
+    player.setVolume(currentVolume);
   }
-});
+}
 
 // 열기/닫기
 function togglePlayer() {
