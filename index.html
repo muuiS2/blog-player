@@ -5,46 +5,186 @@
 <title>nostalgia room...</title>
 <link rel="icon" href="https://i.imgur.com/RuGTMsY.png">
 
-<link rel="stylesheet" href="style.css">
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+/* 블로그 */
+.blog-frame {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+}
+
+/* 🎧 플레이어 */
+.player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 260px;
+  height: 140px;
+  background: rgba(220,220,220,0.9);
+  border-radius: 12px;
+  padding: 8px;
+  z-index: 9999;
+}
+
+/* 유튜브 */
+.player iframe {
+  width: 100%;
+  height: 80px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* 정보 */
+.info {
+  font-size: 12px;
+  color: #444;
+  margin-top: 4px;
+}
+
+/* 버튼 */
+.controls {
+  display:flex;
+  gap:6px;
+  margin-top:4px;
+}
+
+button {
+  border:none;
+  background:#ddd;
+  border-radius:6px;
+  padding:4px 6px;
+  cursor:pointer;
+}
+
+/* 🐾 시메지 */
+#shimeji {
+  position: fixed;
+  width: 120px;
+  left: 100px;
+  top: 100px;
+  z-index: 9999;
+  cursor: grab;
+}
+</style>
 </head>
 
 <body>
 
 <iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
 
-<div class="player" id="player">
-  <div class="toggle" onclick="togglePlayer()">♬</div>
+<!-- 🎧 플레이어 -->
+<div class="player">
 
-  <div class="player-ui">
-    <iframe 
-      id="ytplayer"
-      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
-      allow="autoplay">
-    </iframe>
+  <iframe id="ytplayer"></iframe>
 
-    <div class="info">
-      <div>
-        <div class="title">Nostalgia Room</div>
-        <div class="artist">playlist</div>
-      </div>
+  <div class="info" id="songTitle">재생 준비...</div>
 
-      <div class="controls">
-        <button onclick="playVideo()">▶</button>
-        <button onclick="pauseVideo()">⏸</button>
-
-        <div class="volume">
-          <button onclick="volDown()">-</button>
-          <button onclick="volUp()">+</button>
-        </div>
-      </div>
-    </div>
+  <div class="controls">
+    <button onclick="playVideo()">▶</button>
+    <button onclick="pauseVideo()">⏸</button>
+    <button onclick="volDown()">-</button>
+    <button onclick="volUp()">+</button>
   </div>
+
 </div>
 
-<img id="shimeji" src="" />
+<!-- 🐾 시메지 -->
+<img id="shimeji" src="https://i.imgur.com/dAudV3g.png">
 
+<!-- 유튜브 API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-<script src="script.js"></script>
+
+<script>
+// =======================
+// 🎬 유튜브
+// =======================
+let player;
+let currentVolume = 50;
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('ytplayer', {
+    height: '80',
+    width: '200',
+    playerVars: {
+      listType: 'playlist',
+      list: 'PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq',
+      autoplay: 1
+    },
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerReady() {
+  player.setVolume(currentVolume);
+}
+
+function onPlayerStateChange() {
+  const data = player.getVideoData();
+  document.getElementById("songTitle").innerText = data.title;
+}
+
+// 버튼
+function playVideo() { player.playVideo(); }
+function pauseVideo() { player.pauseVideo(); }
+
+function volUp() {
+  currentVolume = Math.min(100, currentVolume + 10);
+  player.setVolume(currentVolume);
+}
+
+function volDown() {
+  currentVolume = Math.max(0, currentVolume - 10);
+  player.setVolume(currentVolume);
+}
+
+
+// =======================
+// 🐾 시메지 (완전복구)
+// =======================
+
+const el = document.getElementById("shimeji");
+
+let x = 100;
+let y = 100;
+let dragging = false;
+
+// 드래그
+el.onmousedown = () => {
+  dragging = true;
+  el.style.cursor = "grabbing";
+};
+
+window.onmouseup = () => {
+  dragging = false;
+  el.style.cursor = "grab";
+};
+
+window.onmousemove = (e) => {
+  if (!dragging) return;
+  x = e.clientX - 60;
+  y = e.clientY - 60;
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+};
+
+// 랜덤 이동
+setInterval(() => {
+  if (dragging) return;
+  x += (Math.random() - 0.5) * 20;
+  y += (Math.random() - 0.5) * 20;
+
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+}, 500);
+</script>
 
 </body>
 </html>
