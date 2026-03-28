@@ -17,85 +17,57 @@ body {
 }
 
 /* 🎧 플레이어 */
-.player.open {
-  width: 340px;
-  height: 180px;
-  border-radius: 16px;
-  background: rgba(220, 220, 220, 0.9);
-  padding: 12px;
-}
+<!DOCTYPE html>
 
-/* 내부 레이아웃 */
-.player-ui {
-  display: flex;
-  gap: 12px;
-}
+<div class="player" id="player">
 
-/* 유튜브 정사각형 */
-.player iframe {
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
-}
+  <!-- ✅ ⭐ 이게 사라졌던 버튼 -->
+  <div class="toggle" onclick="togglePlayer()">♬</div>
 
-/* 오른쪽 영역 */
-.info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
+  <!-- 펼친 상태 -->
+  <div class="player-header">
+    <span>music</span>
+    <span class="min-btn" onclick="togglePlayer()">–</span>
+  </div>
 
-/* 텍스트 */
-.title {
-  font-size: 13px;
-  color: #444;
-}
+  <div class="content">
 
-.artist {
-  font-size: 11px;
-  color: #777;
-}
+    <div class="player-ui">
 
-/* 컨트롤 */
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-}
+      <!-- 🎬 유튜브 -->
+      <iframe 
+        id="ytplayer"
+        src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
+        allow="autoplay">
+      </iframe>
 
-.controls button {
-  border: none;
-  background: #ddd;
-  padding: 4px 6px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+      <!-- 🎵 정보 -->
+      <div class="info">
 
-/* 볼륨 */
-.volume {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+        <div>
+          <div class="title">Nostalgia Room</div>
+          <div class="artist">playlist</div>
+        </div>
 
-.volume button {
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
-  padding: 0;
-}
+        <!-- ▶ 컨트롤 -->
+        <div class="controls">
+          <button onclick="playVideo()">▶</button>
+          <button onclick="pauseVideo()">⏸</button>
 
-/* 하단 바 (감성용) */
-.progress {
-  height: 3px;
-  background: #bbb;
-  border-radius: 3px;
-  margin-top: 8px;
-}
+          <div class="volume">
+            <button onclick="volDown()">-</button>
+            <button onclick="volUp()">+</button>
+          </div>
+        </div>
 
-/* 동그라미 */
+      </div>
+    </div>
+
+    <!-- 감성 바 -->
+    <div class="progress"></div>
+
+  </div>
+</div>
 .volume-box input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 10px;
