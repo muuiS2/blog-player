@@ -24,52 +24,41 @@ body {
   bottom: 20px;
   width: 60px;
   height: 60px;
-  background: rgba(200, 200, 200, 0.7);
+  background: rgba(200,200,200,0.7);
   border-radius: 50%;
-  overflow: hidden;
   z-index: 9999;
   transition: 0.3s;
+  overflow: hidden;
 }
 
 /* 펼쳤을 때 */
 .player.open {
-  width: 340px;
+  width: 320px;
   height: 180px;
   border-radius: 16px;
-  padding: 12px;
-  background: rgba(220, 220, 220, 0.9);
+  padding: 10px;
+  background: rgba(220,220,220,0.95);
 }
 
 /* 토글 버튼 */
 .toggle {
   width: 60px;
   height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:20px;
 }
 
-/* 상단 */
-.player-header {
-  display: none;
-}
-
-.player.open .player-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-
-/* 내부 */
+/* 펼친 UI */
 .player-ui {
   display: none;
 }
 
 .player.open .player-ui {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 /* 유튜브 */
@@ -81,52 +70,59 @@ body {
 
 /* 오른쪽 */
 .info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 .title {
-  font-size: 13px;
+  font-size:13px;
+  color:#444;
 }
 
 .artist {
-  font-size: 11px;
-  color: #777;
+  font-size:11px;
+  color:#777;
 }
 
-/* 컨트롤 */
+/* 버튼 */
 .controls {
-  display: flex;
-  gap: 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
 .controls button {
-  border: none;
-  background: #ddd;
-  padding: 4px 6px;
-  border-radius: 6px;
-  cursor: pointer;
+  border:none;
+  background:#ddd;
+  padding:4px 6px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
 /* 볼륨 */
+.volume {
+  display:flex;
+  gap:4px;
+}
+
 .volume button {
-  width: 20px;
-  height: 20px;
+  width:22px;
+  height:22px;
 }
 
 /* 하단 바 */
 .progress {
-  display: none;
+  display:none;
 }
 
 .player.open .progress {
-  display: block;
-  height: 3px;
-  background: #bbb;
-  margin-top: 6px;
-  border-radius: 3px;
+  display:block;
+  height:3px;
+  background:#bbb;
+  border-radius:3px;
+  margin-top:6px;
 }
 </style>
 </head>
@@ -139,27 +135,28 @@ body {
 <!-- 🎧 플레이어 -->
 <div class="player" id="player">
 
+  <!-- 접기/열기 버튼 -->
   <div class="toggle" onclick="togglePlayer()">♬</div>
 
-  <div class="player-header">
-    <span>music</span>
-    <span onclick="togglePlayer()">–</span>
-  </div>
-
+  <!-- 내부 UI -->
   <div class="player-ui">
 
+    <!-- 유튜브 -->
     <iframe 
       id="ytplayer"
       src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
       allow="autoplay">
     </iframe>
 
+    <!-- 오른쪽 -->
     <div class="info">
+
       <div>
         <div class="title">Nostalgia Room</div>
         <div class="artist">playlist</div>
       </div>
 
+      <!-- 컨트롤 -->
       <div class="controls">
         <button onclick="playVideo()">▶</button>
         <button onclick="pauseVideo()">⏸</button>
@@ -169,6 +166,7 @@ body {
           <button onclick="volUp()">+</button>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -178,6 +176,7 @@ body {
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 let player;
 let volume = 50;
@@ -186,23 +185,28 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('ytplayer');
 }
 
+// 열기/닫기
 function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
 
+// 재생
 function playVideo() {
-  player.playVideo();
+  if (player) player.playVideo();
 }
 
+// 정지
 function pauseVideo() {
-  player.pauseVideo();
+  if (player) player.pauseVideo();
 }
 
+// 볼륨 +
 function volUp() {
   volume = Math.min(100, volume + 10);
   player.setVolume(volume);
 }
 
+// 볼륨 -
 function volDown() {
   volume = Math.max(0, volume - 10);
   player.setVolume(volume);
@@ -211,6 +215,9 @@ function volDown() {
 
 </body>
 </html>
+
+
+
 <!-- 📄 블로그 -->
 <iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
 
