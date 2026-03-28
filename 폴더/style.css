@@ -9,35 +9,32 @@ body {
   border: none;
 }
 
+/* 플레이어 */
 .player {
   position: fixed;
   right: 20px;
   bottom: 20px;
   width: 60px;
   height: 60px;
-  background: rgba(200,200,200,0.7);
+  background: #ccc;
   border-radius: 50%;
-  z-index: 9999;
-  transition: 0.3s;
   overflow: hidden;
+  transition: 0.3s;
 }
 
 .player.open {
-  width: 320px;
-  height: 180px;
-  border-radius: 16px;
-  padding: 10px;
-  background: rgba(220,220,220,0.95);
+  width: 260px;
+  height: 160px;
+  border-radius: 10px;
 }
 
 .toggle {
   width: 60px;
   height: 60px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   cursor:pointer;
-  font-size:20px;
 }
 
 .player-ui {
@@ -46,37 +43,21 @@ body {
 
 .player.open .player-ui {
   display: flex;
-  gap: 10px;
 }
 
-.player iframe {
+iframe {
   width: 120px;
-  height: 120px;
-  border-radius: 10px;
-}
-
-.info {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.controls {
-  display:flex;
-  gap:8px;
+  height: 90px;
+  border: none;
 }
 
 .controls button {
-  border:none;
-  background:#ddd;
-  border-radius:6px;
+  margin: 2px;
 }
 
 #shimeji {
   position: fixed;
-  width: 120px;
-  left: 100px;
+  width: 100px;
   top: 100px;
-  z-index: 9999;
+  left: 100px;
 }
