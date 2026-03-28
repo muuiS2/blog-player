@@ -5,7 +5,64 @@
 <title>nostalgia room...</title>
 <link rel="icon" href="https://i.imgur.com/RuGTMsY.png">
 
-<style>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- 📄 블로그 -->
+<iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
+
+<!-- 🎧 플레이어 -->
+<div class="player" id="player">
+
+  <!-- 접기 버튼 -->
+  <div class="toggle" onclick="togglePlayer()">♬</div>
+
+  <!-- 펼친 UI -->
+  <div class="player-ui">
+
+    <iframe 
+      id="ytplayer"
+      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
+      allow="autoplay">
+    </iframe>
+
+    <div class="info">
+
+      <div>
+        <div class="title">Nostalgia Room</div>
+        <div class="artist">playlist</div>
+      </div>
+
+      <div class="controls">
+        <button onclick="playVideo()">▶</button>
+        <button onclick="pauseVideo()">⏸</button>
+
+        <div class="volume">
+          <button onclick="volDown()">-</button>
+          <button onclick="volUp()">+</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- 🐾 시메지 -->
+<img id="shimeji" src="" />
+
+<!-- JS -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
+
+
+<!--  CSS -->
+<!--  카테고리 확인!! -->
 body {
   margin: 0;
   overflow: hidden;
@@ -31,7 +88,7 @@ body {
   overflow: hidden;
 }
 
-/* 펼쳤을 때 */
+/* 펼침 */
 .player.open {
   width: 320px;
   height: 180px;
@@ -40,7 +97,7 @@ body {
   background: rgba(220,220,220,0.95);
 }
 
-/* 토글 버튼 */
+/* 버튼 */
 .toggle {
   width: 60px;
   height: 60px;
@@ -51,7 +108,7 @@ body {
   font-size:20px;
 }
 
-/* 펼친 UI */
+/* 내부 */
 .player-ui {
   display: none;
 }
@@ -112,179 +169,60 @@ body {
   height:22px;
 }
 
-/* 하단 바 */
-.progress {
-  display:none;
-}
-
-.player.open .progress {
-  display:block;
-  height:3px;
-  background:#bbb;
-  border-radius:3px;
-  margin-top:6px;
-}
-</style>
-</head>
-
-<body>
-
-<!-- 📄 블로그 -->
-<iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
-
-<!-- 🎧 플레이어 -->
-<div class="player" id="player">
-
-  <!-- 접기/열기 버튼 -->
-  <div class="toggle" onclick="togglePlayer()">♬</div>
-
-  <!-- 내부 UI -->
-  <div class="player-ui">
-
-    <!-- 유튜브 -->
-    <iframe 
-      id="ytplayer"
-      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
-      allow="autoplay">
-    </iframe>
-
-    <!-- 오른쪽 -->
-    <div class="info">
-
-      <div>
-        <div class="title">Nostalgia Room</div>
-        <div class="artist">playlist</div>
-      </div>
-
-      <!-- 컨트롤 -->
-      <div class="controls">
-        <button onclick="playVideo()">▶</button>
-        <button onclick="pauseVideo()">⏸</button>
-
-        <div class="volume">
-          <button onclick="volDown()">-</button>
-          <button onclick="volUp()">+</button>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="progress"></div>
-
-</div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-let player;
-let volume = 50;
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('ytplayer');
-}
-
-// 열기/닫기
-function togglePlayer() {
-  document.getElementById("player").classList.toggle("open");
-}
-
-// 재생
-function playVideo() {
-  if (player) player.playVideo();
-}
-
-// 정지
-function pauseVideo() {
-  if (player) player.pauseVideo();
-}
-
-// 볼륨 +
-function volUp() {
-  volume = Math.min(100, volume + 10);
-  player.setVolume(volume);
-}
-
-// 볼륨 -
-function volDown() {
-  volume = Math.max(0, volume - 10);
-  player.setVolume(volume);
-}
-</script>
-
-</body>
-</html>
-
-
-
-<!-- 📄 블로그 -->
-<iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
-
-<!-- 🎧 플레이어 -->
-<div class="player" id="player">
-
-  <!-- 접힌 상태 -->
-  <div class="toggle" onclick="togglePlayer()">♬</div>
-
-  <!-- 펼친 상태 -->
-  <div class="player-header">
-    <span>music</span>
-    <span class="min-btn" onclick="togglePlayer()">–</span>
-  </div>
-
-  <div class="content">
-
-    <div class="player-ui">
-
-      <!-- 🎬 유튜브 -->
-      <iframe 
-        id="ytplayer"
-        src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&enablejsapi=1&controls=0"
-        allow="autoplay">
-      </iframe>
-
-      <!-- 🎵 정보 -->
-      <div class="info">
-
-        <div>
-          <div class="title">Nostalgia Room</div>
-          <div class="artist">playlist</div>
-        </div>
-
-        <!-- ▶ 컨트롤 -->
-        <div class="controls">
-          <button onclick="playVideo()">▶</button>
-          <button onclick="pauseVideo()">⏸</button>
-
-          <div class="volume">
-            <button onclick="volDown()">-</button>
-            <button onclick="volUp()">+</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 감성 바 -->
-    <div class="progress"></div>
-
-  </div>
-</div>
-
-
- <!-- 시메지 --> 
-<img id="shimeji" src="" style="
+/* 🐾 시메지 */
+#shimeji {
   position: fixed;
   width: 120px;
   left: 100px;
   top: 100px;
   z-index: 9999;
   cursor: grab;
-">
+}
 
-<script>
-// 🎨 이미지 설정
+<!--  Java Script -->
+<!--  카테고리 확인!! -->
+
+// =======================
+// 🎬 유튜브
+// =======================
+let player;
+let currentVolume = 50;
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('ytplayer');
+}
+
+function playVideo() {
+  if (player) player.playVideo();
+}
+
+function pauseVideo() {
+  if (player) player.pauseVideo();
+}
+
+function volUp() {
+  if (player) {
+    currentVolume = Math.min(100, currentVolume + 10);
+    player.setVolume(currentVolume);
+  }
+}
+
+function volDown() {
+  if (player) {
+    currentVolume = Math.max(0, currentVolume - 10);
+    player.setVolume(currentVolume);
+  }
+}
+
+function togglePlayer() {
+  document.getElementById("player").classList.toggle("open");
+}
+
+
+// =======================
+// 🐾 시메지
+// =======================
+
 const sprites = {
   down: ["https://i.imgur.com/5JH2HqN.png","https://i.imgur.com/9IpmQaN.png","https://i.imgur.com/FJh2LPr.png"],
   up: ["https://i.imgur.com/Rp4MyTo.png","https://i.imgur.com/dqR3wTc.png","https://i.imgur.com/sT4sYoE.png"],
@@ -304,7 +242,7 @@ const sprites = {
   fall: ["https://i.imgur.com/nSgLstM.png"]
 };
 
-// 🔥 preload
+// preload
 Object.values(sprites).flat().forEach(src => {
   const img = new Image();
   img.src = src;
@@ -323,19 +261,17 @@ let state = "walk";
 let dirTimer = 0;
 let dragging = false;
 
-// 😴 sleep 전용
 let sleepFrame = 0;
 let sleepStarted = false;
-
 let turnDelay = 5;
 
-// 🎲 방향
+// 방향
 function randomDir() {
   const dirs = ["up","down","left","right"];
   return dirs[Math.floor(Math.random()*4)];
 }
 
-// 🎲 상태 변경
+// 상태
 function randomState() {
   if (dragging) return;
 
@@ -355,21 +291,19 @@ function randomState() {
     state = "walk";
   }
 
-  // sleep 종료 시 초기화
   if (state !== "sleep") {
     sleepStarted = false;
   }
 }
 
-// 🎮 이동
+// 이동
 function move() {
 
-  // 방향 바뀌면 프레임 초기화
- if (dir !== prevDir) {
-  frame = 0;
-  prevDir = dir;
-  turnDelay = 5; // ⭐ 방향 바뀌면 잠깐 멈춤
-}
+  if (dir !== prevDir) {
+    frame = 0;
+    prevDir = dir;
+    turnDelay = 5;
+  }
 
   if (dragging) {
     frame++;
@@ -380,17 +314,16 @@ function move() {
   if (state === "walk") {
 
     if (turnDelay > 0) {
-  turnDelay--;
-  el.src = sprites[dir][0]; // 정지 이미지
-  return;
+      turnDelay--;
+      el.src = sprites[dir][0];
+      return;
     }
-    
+
     if (dir === "right") x += 1;
     if (dir === "left") x -= 1;
     if (dir === "down") y += 1;
     if (dir === "up") y -= 1;
 
-    // 벽 충돌
     if (x <= 0) dir = "right";
     if (x >= window.innerWidth - 120) dir = "left";
     if (y <= 0) dir = "down";
@@ -419,14 +352,12 @@ function move() {
     frame++;
 
     if (frame % 15 === 0) {
-
       if (sleepFrame < 2) {
         sleepFrame++;
       } else {
         sleepFrame++;
         if (sleepFrame >= 5) sleepFrame = 2;
       }
-
       el.src = sprites.sleep[sleepFrame];
     }
   }
@@ -434,13 +365,12 @@ function move() {
   randomState();
 }
 
-// 🖱️ 잡기
+// 드래그
 el.onmousedown = () => {
   dragging = true;
   el.style.cursor = "grabbing";
 };
 
-// 🖱️ 놓기
 window.onmouseup = () => {
   if (!dragging) return;
 
@@ -468,7 +398,6 @@ window.onmouseup = () => {
   falling();
 };
 
-// 🖱️ 드래그 이동
 window.onmousemove = (e) => {
   if (!dragging) return;
 
@@ -479,67 +408,5 @@ window.onmousemove = (e) => {
   el.style.top = y + "px";
 };
 
-// ▶ 실행
 setInterval(move, 120);
 
-// 🎵 플레이어 버튼 (반드시 따로!)
-function togglePlayer() {
-  document.getElementById("player").classList.toggle("open");
-}
-</script>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-let player;
-
-// 유튜브 준비
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('ytplayer', {
-    events: {
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-let player;
-let currentVolume = 50;
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('ytplayer');
-}
-
-// ▶ 재생
-function playVideo() {
-  if (player) player.playVideo();
-}
-
-// ⏸ 정지
-function pauseVideo() {
-  if (player) player.pauseVideo();
-}
-
-// 🔊 볼륨 +
-function volUp() {
-  if (player) {
-    currentVolume = Math.min(100, currentVolume + 10);
-    player.setVolume(currentVolume);
-  }
-}
-
-// 🔉 볼륨 -
-function volDown() {
-  if (player) {
-    currentVolume = Math.max(0, currentVolume - 10);
-    player.setVolume(currentVolume);
-  }
-}
-
-// 열기/닫기
-function togglePlayer() {
-  document.getElementById("player").classList.toggle("open");
-}
-</script>
