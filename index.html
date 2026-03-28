@@ -95,28 +95,12 @@ body {
 /* 펼쳤을 때 */
 .player.open {
   width: 260px;
-  height: 320px;
+  height: 340px; /* ⭐ 이거 늘림 */
   border-radius: 15px;
   background: rgba(220, 220, 220, 0.9);
 }
 
-/* 버튼 */
-.toggle {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 20px;
-}
-
 /* 내용 */
-.content {
-  display: none;
-  padding: 10px;
-}
-
 .player.open .content {
   display: flex;
   flex-direction: column;
@@ -127,11 +111,10 @@ body {
 .player iframe {
   width: 100%;
   height: 150px;
-  border: none;
   border-radius: 8px;
 }
 
-/* 🎚 볼륨 슬라이더 */
+/* 볼륨 */
 .volume-box {
   margin-top: 10px;
   display: flex;
@@ -143,14 +126,14 @@ body {
   width: 100%;
 }
 
-/* 닫기 버튼 (항상 아래 고정) */
+/* 닫기 버튼 */
 .close-btn {
   margin-top: auto;
   width: 100%;
   background: #cfcfcf;
   color: #444;
   border: none;
-  padding: 6px;
+  padding: 8px;
   cursor: pointer;
   border-radius: 5px;
 }
