@@ -123,6 +123,20 @@ body {
   font-size: 12px;
   color: #666;
 }
+  
+/* 🎵 흔들리는 애니메이션 */
+@keyframes musicShake {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-6deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* 재생 중일 때 */
+.player.playing .toggle {
+  animation: musicShake 0.6s infinite;
+}
 </style>
 
 </head>
@@ -135,7 +149,7 @@ body {
 <!-- 🎧 플레이어 -->
 <div class="player" id="player">
 
-  <div class="toggle" onclick="togglePlayer()">♬</div>
+<div class="toggle" id="musicToggle" onclick="togglePlayer()">♬</div>
 
   <div class="content">
 
@@ -377,39 +391,36 @@ function togglePlayer() {
 <script>
 let player;
 
-// 유튜브 API 준비
+// 유튜브 준비
 function onYouTubeIframeAPIReady() {
-  player = new YT.Player('ytplayer');
+  player = new YT.Player('ytplayer', {
+    events: {
+      'onStateChange': onPlayerStateChange
+    }
+  });
 }
 
-// 볼륨 조절
+// 🎵 재생 상태 감지
+function onPlayerStateChange(event) {
+  const el = document.getElementById("player");
+
+  // 재생 중
+  if (event.data === YT.PlayerState.PLAYING) {
+    el.classList.add("playing");
+  } else {
+    el.classList.remove("playing");
+  }
+}
+
+// 🎚 볼륨
 document.getElementById("volumeSlider").addEventListener("input", function() {
   if (player) {
     player.setVolume(this.value);
   }
 });
 
-// 플레이어 열기/닫기
+// 열기/닫기
 function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
 </script>
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-let player;
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('ytplayer');
-}
-
-document.getElementById("volumeSlider").addEventListener("input", function() {
-  if (player) {
-    player.setVolume(this.value);
-  }
-});
-
-function togglePlayer() {
-  document.getElementById("player").classList.toggle("open");
-}
-</script>  
