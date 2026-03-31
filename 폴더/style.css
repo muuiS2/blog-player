@@ -1,12 +1,12 @@
 body {
   margin: 0;
-  overflow: hidden;
 }
-
 .blog-frame {
   width: 100vw;
   height: 100vh;
   border: none;
+  position: relative;
+  z-index: 1;
 }
 
 /* 플레이어 */
