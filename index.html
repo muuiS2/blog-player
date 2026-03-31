@@ -39,3 +39,110 @@
 </body>
 </html>
 
+<img id="shimeji" src="" style="
+  position: fixed;
+  width: 120px;
+  left: 100px;
+  top: 100px;
+  z-index: 9999;
+  pointer-events: none;
+">
+
+<script>
+// 🎨 이미지 설정 (완전한 구조로 다시 정리)
+const sprites = {
+  down: [
+    "https://i.imgur.com/5JH2HqN.png",
+    "https://i.imgur.com/9IpmQaN.png",
+    "https://i.imgur.com/FJh2LPr.png"
+  ],
+  up: [
+    "https://i.imgur.com/eiulE3a.png",
+    "https://i.imgur.com/dAudV3g.png",
+    "https://i.imgur.com/wHNO6s0.png"
+  ],
+  left: [
+    "https://i.imgur.com/Rp4MyTo.png",
+    "https://i.imgur.com/dqR3wTc.png",
+    "https://i.imgur.com/sT4sYoE.png"
+  ],
+  right: [
+    "https://i.imgur.com/gfhylI8.png",
+    "https://i.imgur.com/AvUePs9.png",
+    "https://i.imgur.com/IIzugPg.png"
+  ]
+};
+
+// 🔥 이미지 미리 로딩 (깜빡임 해결)
+Object.values(sprites).flat().forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
+const el = document.getElementById("shimeji");
+
+let x = 100;
+let y = 100;
+
+let dir = "right";
+let frame = 0;
+let state = "walk";
+
+// 🔥 방향 유지 시간
+let dirTimer = 0;
+
+// 🎲 랜덤 방향
+function randomDir() {
+  const dirs = ["up","down","left","right"];
+  return dirs[Math.floor(Math.random()*4)];
+}
+
+// 🎲 상태 + 방향 관리
+function randomState() {
+  dirTimer--;
+
+  if (dirTimer <= 0) {
+    dir = randomDir();
+    dirTimer = Math.floor(Math.random() * 100) + 50;
+  }
+
+  if (Math.random() < 0.01) {
+    state = (state === "walk") ? "idle" : "walk";
+  }
+}
+
+// 🎮 이동
+function move() {
+  if (state === "walk") {
+
+    if (dir === "right") x += 1;
+    if (dir === "left") x -= 1;
+    if (dir === "down") y += 1;
+    if (dir === "up") y -= 1;
+
+    // 🧱 벽 충돌 시 방향 전환
+    if (x <= 0) dir = "right";
+    if (x >= window.innerWidth - 120) dir = "left";
+    if (y <= 0) dir = "down";
+    if (y >= window.innerHeight - 120) dir = "up";
+
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+
+    // 🦶 걷기 애니메이션
+    frame++;
+    let f = frame % 3;
+    el.src = sprites[dir][f];
+  }
+
+  if (state === "idle") {
+    el.src = sprites[dir][0]; // 정지 이미지
+  }
+
+  randomState();
+}
+
+// ⏱ 실행
+setInterval(move, 120);
+</script>
+
