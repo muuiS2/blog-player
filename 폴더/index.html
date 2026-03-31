@@ -2,42 +2,36 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>nostalgia room...</title>
-
-<link rel="stylesheet" href="style.css">
-<script src="script.js"></script>
+<title>My Blog Player</title>
 </head>
 
-<body>
+<body style="margin:0; overflow:hidden;">
 
-<!-- 블로그 -->
-<iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
+<!-- 🎵 유튜브 플레이어 (고정) -->
+<iframe 
+  src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1&playlist=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq"
+  style="
+    position:fixed;
+    top:50%;
+    right:20px;
+    transform:translateY(-50%);
+    width:220px;
+    height:124px;
+    border:none;
+    z-index:9999;
+  "
+  allow="autoplay"
+></iframe>
 
-<!-- 플레이어 -->
-<div class="player" id="player">
-  <div class="toggle" onclick="togglePlayer()">♬</div>
-
-  <div class="player-ui">
-    <iframe id="ytplayer"></iframe>
-
-    <div class="info">
-      <div id="title">loading...</div>
-
-      <div class="controls">
-        <button onclick="playVideo()">▶</button>
-        <button onclick="pauseVideo()">⏸</button>
-        <button onclick="volDown()">-</button>
-        <button onclick="volUp()">+</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 시메지 -->
-<img id="shimeji" src="https://i.imgur.com/dAudV3g.png">
-
-<script src="https://www.youtube.com/iframe_api"></script>
-<script src="script.js"></script>
+<!-- 📄 FC2 블로그 전체 -->
+<iframe 
+  src="https://ourazem.blog.fc2.com/"
+  style="
+    width:100%;
+    height:100vh;
+    border:none;
+  ">
+</iframe>
 
 </body>
 </html>
