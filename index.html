@@ -4,37 +4,6 @@
 <meta charset="UTF-8">
   <title>nostalgia room...</title>
   <link rel="icon" href="https://i.imgur.com/RuGTMsY.png">
-
-  <!-- BGM 플레이어 : https://mmu-u.tistory.com/3 -->
-  <iframe src="./images/bgm.html" class="mm-bgm" allow="autoplay" allowfullscreen></iframe>
-  
-  <script>
-    window.addEventListener('message', function(event) {
-    // 필요시 수정
-    if (event.origin !== 'https://tistory1.daumcdn.net') return;
-    
-    // 요소 가져오기
-    const bgmonElement = document.querySelector('.mm-bgm');
-    if (!bgmonElement) return;
-    
-    // 메시지 처리
-    if (event.data.action === 'expand') {
-        //bgmonElement.style.transition = 'height 0.3s ease';
-        //bgmonElement.style.transition = 'width 0.3s ease';
-        bgmonElement.style.width = '224px';
-        bgmonElement.style.height = '152px';
-        
-    } 
-    else if (event.data.action === 'minimize') {
-        //bgmonElement.style.transition = 'height 0.3s ease';
-        //bgmonElement.style.transition = 'width 0.3s ease';
-        bgmonElement.style.width = '25px';
-        bgmonElement.style.height = '25px';
-    }
-});
-  </script>
-<!-- BGM 플레이어 끝-->
-  
 <style>
 body {
   margin: 0;
@@ -47,12 +16,97 @@ body {
   border: none;
 }
 
+/* 🎧 플레이어 */
+.player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+
+  background: rgba(220, 220, 220, 0.75); /* 반투명 */
+
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 9999;
+  transition: 0.3s;
+  color: #555;
+
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.player.open {
+  width: 260px;
+  height: 260px;
+  border-radius: 15px;
+
+  background: rgba(220, 220, 220, 0.85);
+}
+
+/* 버튼 */
+.toggle {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* 내용 */
+.content {
+  display: none;
+  padding: 10px;
+}
+
+.player.open .content {
+  display: block;
+}
+
+/* 유튜브 */
+.player iframe {
+  width: 100%;
+  height: 150px;
+  border: none;
+  border-radius: 8px;
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  margin-top: 5px;
+  width: 100%;
+  background: #cfcfcf;
+  color: #444;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+</style>
+
 </head>
 
 <body>
 
 <!-- 📄 블로그 -->
 <iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
+
+<!-- 🎧 플레이어 -->
+<div class="player" id="player">
+
+  <div class="toggle" onclick="togglePlayer()">♬</div>
+
+  <div class="content">
+
+    <iframe 
+      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1"
+      allow="autoplay">
+    </iframe>
+
+    <button class="close-btn" onclick="togglePlayer()">닫기</button>
+
   </div>
 </div>
 
@@ -271,13 +325,3 @@ function togglePlayer() {
   document.getElementById("player").classList.toggle("open");
 }
 </script>
-
-  /* - - - BGM 플레이어 관련 - - - */
-.mm-bgm{
-  position: fixed;
-  bottom: 15px; /* 우측상단 원하면 bottom을 top 으로 변경 */
-  right: 15px;
-  z-index: 9999; /* 맨위로 */
-  border: none;
-}
-/* - - - BGM 플레이어 끝 - - -*/
