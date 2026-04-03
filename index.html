@@ -16,99 +16,21 @@ body {
   border: none;
 }
 
-/* 🎧 플레이어 */
-.player {
+.mm-bgm {
   position: fixed;
-  right: 20px;
   bottom: 20px;
-  width: 60px;
-  height: 60px;
-
-  background: rgba(220, 220, 220, 0.75); /* 반투명 */
-
-  border-radius: 50%;
-  overflow: hidden;
+  right: 20px;
+  width: 25px;
+  height: 25px;
+  border: none;
   z-index: 9999;
-  transition: 0.3s;
-  color: #555;
-
-  box-shadow: 0 0 8px rgba(0,0,0,0.08);
-  border: 1px solid rgba(255,255,255,0.4);
 }
-
-.player.open {
-  width: 260px;
-  height: 260px;
-  border-radius: 15px;
-
-  background: rgba(220, 220, 220, 0.85);
-}
-
-/* 버튼 */
-.toggle {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* 내용 */
-.content {
-  display: none;
-  padding: 10px;
-}
-
-.player.open .content {
-  display: block;
-}
-
-/* 유튜브 */
-.player iframe {
-  width: 100%;
-  height: 150px;
-  border: none;
-  border-radius: 8px;
-}
-
-/* 닫기 버튼 */
-.close-btn {
-  margin-top: 5px;
-  width: 100%;
-  background: #cfcfcf;
-  color: #444;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-</style>
-
 </head>
 
 <body>
 
 <!-- 📄 블로그 -->
 <iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
-
-<!-- 🎧 플레이어 -->
-<div class="player" id="player">
-
-  <div class="toggle" onclick="togglePlayer()">♬</div>
-
-  <div class="content">
-
-    <iframe 
-      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1"
-      allow="autoplay">
-    </iframe>
-
-    <button class="close-btn" onclick="togglePlayer()">닫기</button>
-
-  </div>
-</div>
 
 
  <!-- 시메지 --> 
@@ -319,9 +241,25 @@ window.onmousemove = (e) => {
 
 // ▶ 실행
 setInterval(move, 120);
-
-// 🎵 플레이어 버튼 (반드시 따로!)
-function togglePlayer() {
-  document.getElementById("player").classList.toggle("open");
-}
+  
 </script>
+
+ <!-- 🎧 BGM 플레이어 -->
+<iframe src="bgm.html" class="mm-bgm" allow="autoplay" allowfullscreen></iframe>
+
+<script>
+window.addEventListener('message', function(event) {
+
+  const bgmonElement = document.querySelector('.mm-bgm');
+  if (!bgmonElement) return;
+
+  if (event.data.action === 'expand') {
+      bgmonElement.style.width = '224px';
+      bgmonElement.style.height = '152px';
+  } 
+  else if (event.data.action === 'minimize') {
+      bgmonElement.style.width = '25px';
+      bgmonElement.style.height = '25px';
+  }
+});
+</script> 
