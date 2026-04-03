@@ -28,7 +28,6 @@ body {
 </style>
 
   
-!-- BGM 플레이어 : https://mmu-u.tistory.com/3 -->
   <iframe src="./images/bgm.html" class="mm-bgm" allow="autoplay" allowfullscreen></iframe>
   
   <script>
@@ -57,9 +56,728 @@ body {
 });
   </script>
 <!-- BGM 플레이어 끝-->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>BGM Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        
+        /* - - - 색상 변경 - -  */
+        :root{
+            --bgm-main: #F5F5F5;
+            --bgm-mdark: #D4D4D4;
+            --bgm-mdark2: #E6E6E6;
+            --bgm-bright: #FFFFFF;
+            --bgm-font: #8F8F8F;
+        }
+
+        /* 색상 변경 설명
+            
+            바로 위에 있는 :root{} 속 # 뒤 6글자를,
+            원하는 컬러 코드(헥스 코드)로 바꿔주세요.
+
+            대소문자 상관 X
+            
+            1) main : 배경색
+            2) mdark : 볼륨쪽 버튼 색상
+            3) mdark2 : 진행바
+            4) bright : 타이틀 배경+버튼 원 컬러
+            5) font : 글씨+버튼 컬러
+        */
+
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
+        body{
+         -ms-overflow-style: none;
+         font-family: 'Pretendard Variable';
+         height: fit-content;
+         }
+         
+        ::-webkit-scrollbar {
+          display: none;
+        }
+
+        .bgm-wrapper {
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+
+            transition: 0.5s;
+            visibility: visible;
+
+            position: fixed;
+            top: 0;
+            right: 0;
+        }
+        
+        .bgm-player {
+            background: var(--bgm-main);
+            padding: 20px 25px;
+            border-radius: 8px;
+        }
+        .player-title {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: var(--bgm-font);
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 10px;
+            margin-top: -8px;
+        }
+        .control-btn {
+            background-color: white;
+            color: var(--bgm-font);
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background-color: var(--bgm-mdark);
+            color: white;
+            transform: scale(1.1);
+        }
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--bgm-mdark);
+            scale: 0.8;
+            margin-left: -5px;
+        }
+        .volume-slider {
+            flex-grow: 1;
+            height: 5px;
+            -webkit-appearance: none;
+            background: var(--bgm-mdark2);
+            outline: none;
+            border-radius: 3px;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bgm-mdark);
+            cursor: pointer;
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bgm-mdark);
+            cursor: pointer;
+        }
+        .minimize-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: none;
+            border: none;
+            color: var(--bgm-font);
+            cursor: pointer;
+            font-size: 10px;
+        }
+        .mini-player {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            background: var(--bgm-mdark);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            z-index: 999;
+
+            visibility: visible;
+            font-size: 12px;
+        }
+        .current-song-title {
+            background-color: white;
+            color: var(--bgm-font);
+            padding: 4px;
+            border-radius: 30px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hidden {
+            visibility: hidden;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        #player {
+            display: none;
+        }
+        
+        /* 프로그레스바 스타일 */
+        .progress-container {
+            margin-bottom: 15px;
+            padding: 0 10px;
+            position: relative;
+            scale: 1.1;
+        }
+        .progress-bar {
+            height: 5px;
+            background: var(--bgm-mdark2);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--bgm-mdark);
+            width: 0;
+            border-radius: 3px;
+            transition: width 0.1s;
+        }
+        .progress-thumb {
+            width: 5px;
+            height: 5px;
+            background: var(--bgm-bright);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            color: var(--bgm-font);
+            margin-top: 3px;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- 미니 플레이어 (최소화된 상태) -->
+    <div class="mini-player hidden" id="miniPlayer" onclick="expandPlayer()">
+        <i class="fas fa-music"></i>
+    </div>
+    
+    <!-- 메인 플레이어 -->
+    <div class="bgm-wrapper" id="mainPlayer">
+        <div class="bgm-player">
+            <button class="minimize-btn" onclick="minimizePlayer()">
+                <i class="fas fa-minus"></i>
+            </button>
+            <div id="player"></div>
+            
+            <!-- 현재 재생 중인 곡 제목 표시 -->
+            <div class="current-song-title" id="currentSongTitle">곡을 선택해주세요</div>
+            
+            <!-- 프로그레스 바 -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-thumb" id="progressThumb"></div>
+                </div>
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
+                </div>
+            </div>
+
+            
+            <div class="control-buttons">
+                <button class="control-btn" onclick="prevSong()" title="이전 곡">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn" onclick="playVideo()" title="재생">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="control-btn" onclick="pauseVideo()" title="일시정지">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="control-btn" onclick="nextSong()" title="다음 곡">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+
+            <div class="volume-control">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider">
+                <i class="fas fa-volume-up"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // MutationObserver 설정
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const miniPlayer = document.querySelector('.mini-player');
+                const bgmWrapper = document.querySelector('.bgm-wrapper');
+                
+                // .mini-player에 .hidden 클래스가 제거됐을 경우 (보이게 됐을 경우)
+                if (miniPlayer && !miniPlayer.classList.contains('hidden')) {
+                    window.parent.postMessage({ action: 'minimize' }, '*');
+                }
+                
+                // .bgm-wrapper에 .hidden 클래스가 제거됐을 경우 (보이게 됐을 경우)
+                if (bgmWrapper && !bgmWrapper.classList.contains('hidden')) {
+                    window.parent.postMessage({ action: 'expand' }, '*');
+                }
+            }
+        });
+    });
+    
+    // 감시할 대상 요소들
+    const miniPlayer = document.querySelector('.mini-player');
+    const bgmWrapper = document.querySelector('.bgm-wrapper');
+    
+    // 옵저버 설정 (클래스 변경 감시)
+    if (miniPlayer) {
+        observer.observe(miniPlayer, { attributes: true });
+    }
+    if (bgmWrapper) {
+        observer.observe(bgmWrapper, { attributes: true });
+    }
+    
+    // 초기 상태 확인 및 메시지 전송
+    if (miniPlayer && !miniPlayer.classList.contains('hidden')) {
+        window.parent.postMessage({ action: 'minimize' }, '*');
+    } else if (bgmWrapper && !bgmWrapper.classList.contains('hidden')) {
+        window.parent.postMessage({ action: 'expand' }, '*');
+    }
+});
+    </script>
+    
+    <script>
+        // 특정 사이트에서 내부 페이지 이동 감지를 위한 URL 체크
+        let lastURL = location.href;
+        
+        // 상태 키 설정
+        const STORAGE_KEY = 'bgm_player_state';
+        
+        // 프로그레스 바 업데이트 간격 (밀리초)
+        const PROGRESS_UPDATE_INTERVAL = 500;
+        
+        // 플레이리스트 변경
+        // 여러 곡 추가 가능
+        const songs = [
+            { id: "SKC_58QzofQ", title: "Rachmaninoff: Prelude Op.23 No.6" },
+            { id: "-1Y-KEXoaxA", title: "Chopin: Prelude Op.28 No.21" },
+            { id: "Sbow5JoGSFk", title: "Schumann: Variation V" },
+            { id: "H98Ms1wex2Y", title: "Pathetique" },
+            { id: "nrGQAOFs1p8", title: "None But The Lonely Heart" },
+
+            // id 뒤 따옴표 안에 유튜브 링크 중 ★일부 복붙★
+            // 공유 눌렀을 때 나오는 링크에
+            // ?si=어쩌고 앞에 적혀있는 ★11글자★
+
+            // title은 제목 (플레이어에 보이게 될 제목)
+        ];
+        
+        // 저장된 상태 불러오기
+        let playerState = JSON.parse(localStorage.getItem(STORAGE_KEY) || 
+            `{"isPlaying": false, "volume": 50, "currentTime": 0, "currentSongId": "${songs[0].id}", "isMinimized": false}`);
+
+        
+        // 특정 ID의 곡 재생
+        function playSongById(songId) {
+            playerState.currentSongId = songId;
+            playerState.currentTime = 0;
+            
+            
+            // 곡 제목 업데이트
+            updateSongTitle(songId);
+            
+            // 새 곡으로 플레이어 업데이트
+            if (player) {
+                player.loadVideoById({
+                    'videoId': songId,
+                    'startSeconds': 0
+                });
+                
+                // 항상 재생
+                player.playVideo();
+                playerState.isPlaying = true;
+                
+                // 프로그레스 바 초기화
+                document.getElementById('progressFill').style.width = '0%';
+                document.getElementById('progressThumb').style.left = '0%';
+                document.getElementById('currentTime').textContent = '0:00';
+            }
+            
+            savePlayerState();
+        }
+        
+        // 시간 포맷 함수 (초 -> MM:SS)
+        function formatTime(seconds) {
+            seconds = Math.floor(seconds);
+            const minutes = Math.floor(seconds / 60);
+            seconds = seconds % 60;
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // 프로그레스 바 이벤트 리스너 설정
+        function setupProgressBarEvents() {
+            const progressBar = document.getElementById('progressBar');
+            
+            // 프로그레스 바 클릭 이벤트
+            progressBar.addEventListener('click', function(e) {
+                if (!player || !player.getDuration) return;
+                
+                const totalDuration = player.getDuration();
+                if (!totalDuration) return;
+                
+                const rect = this.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                const seekTime = pos * totalDuration;
+                
+                // 재생 위치 변경
+                player.seekTo(seekTime);
+                updateProgressBar();
+            });
+            
+            // 드래그 기능 추가
+            let isDragging = false;
+            
+            progressBar.addEventListener('mousedown', function() {
+                isDragging = true;
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging || !player || !player.getDuration) return;
+                
+                const totalDuration = player.getDuration();
+                if (!totalDuration) return;
+                
+                const rect = progressBar.getBoundingClientRect();
+                let pos = (e.clientX - rect.left) / rect.width;
+                
+                // 범위 제한 (0-1)
+                pos = Math.max(0, Math.min(1, pos));
+                
+                // 시각적으로 업데이트
+                document.getElementById('progressFill').style.width = `${pos * 100}%`;
+                document.getElementById('progressThumb').style.left = `${pos * 100}%`;
+                
+                // 시간 표시 업데이트
+                const seekTime = pos * totalDuration;
+                document.getElementById('currentTime').textContent = formatTime(seekTime);
+            });
+            
+            document.addEventListener('mouseup', function(e) {
+                if (!isDragging || !player || !player.getDuration) {
+                    isDragging = false;
+                    return;
+                }
+                
+                const totalDuration = player.getDuration();
+                if (!totalDuration) {
+                    isDragging = false;
+                    return;
+                }
+                
+                const rect = progressBar.getBoundingClientRect();
+                let pos = (e.clientX - rect.left) / rect.width;
+                
+                // 범위 제한 (0-1)
+                pos = Math.max(0, Math.min(1, pos));
+                
+                // 재생 위치 변경
+                const seekTime = pos * totalDuration;
+                player.seekTo(seekTime);
+                
+                isDragging = false;
+                updateProgressBar();
+            });
+            
+            // 마우스가 창을 벗어날 경우 드래그 상태 해제
+            document.addEventListener('mouseleave', function() {
+                isDragging = false;
+            });
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            setupProgressBarEvents();
+        });
+        
+        // 플레이어 UI 초기 상태 설정
+        if (playerState.isMinimized) {
+            document.getElementById('mainPlayer').classList.add('hidden');
+            document.getElementById('miniPlayer').classList.remove('hidden');
+        } else {
+            document.getElementById('mainPlayer').classList.remove('hidden');
+            document.getElementById('miniPlayer').classList.add('hidden');
+        }
+        
+        // YouTube API 로드
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        var player;
+        var progressInterval;
+        
+        function onYouTubeIframeAPIReady() {
+            // 곡 없으면 오류 방지
+            if (songs.length === 0) {
+                console.error("곡 목록이 비어 있습니다.");
+                return;
+            }
+            
+            // 저장된 곡이 목록에 없으면 첫 번째 곡 사용
+            let videoId = playerState.currentSongId;
+            if (!songs.some(song => song.id === videoId)) {
+                videoId = songs[0].id;
+                playerState.currentSongId = videoId;
+                savePlayerState();
+            }
+            
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: videoId,
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'start': Math.floor(playerState.currentTime),
+                    'autoplay': playerState.isPlaying ? 1 : 0,
+                    'mute': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // 초기 볼륨 설정
+            player.setVolume(playerState.volume);
+            document.getElementById('volumeSlider').value = playerState.volume;
+            
+            // 현재 선택된 곡 설정
+            if (playerState.currentSongId) {
+                updateSongTitle(playerState.currentSongId);
+            }
+
+            // 이전에 재생 중이었다면 다시 재생
+            if (playerState.isPlaying) {
+                player.playVideo();
+            }
+
+            // 볼륨 변경 리스너 추가
+            document.getElementById('volumeSlider').addEventListener('input', function(e) {
+                const volume = parseInt(e.target.value);
+                player.setVolume(volume);
+                playerState.volume = volume;
+                savePlayerState();
+            });
+
+            // 상태 주기적으로 저장
+            setInterval(savePlayerState, 1000);
+            
+            // 프로그레스 바 주기적으로 업데이트
+            progressInterval = setInterval(updateProgressBar, PROGRESS_UPDATE_INTERVAL);
+            
+            // URL 변경 감지 (티스토리 내 페이지 이동)
+            setInterval(checkForUrlChange, 1000);
+        }
+
+        function onPlayerStateChange(event) {
+            // 재생 상태 업데이트
+            playerState.isPlaying = event.data === YT.PlayerState.PLAYING;
+            
+            // 곡이 끝났을 때 다음 곡 자동 재생
+            if (event.data === YT.PlayerState.ENDED) {
+                nextSong();
+            }
+            
+            // 재생 상태에 따라 프로그레스 바 업데이트 여부 결정
+            if (event.data === YT.PlayerState.PLAYING) {
+                // 이미 인터벌이 있으면 제거 후 다시 설정
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                }
+                progressInterval = setInterval(updateProgressBar, PROGRESS_UPDATE_INTERVAL);
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                // 일시 정지 상태일 때는 한 번만 업데이트
+                updateProgressBar();
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                    progressInterval = null;
+                }
+            }
+            
+            savePlayerState();
+        }
+
+        // 프로그레스 바 업데이트 함수
+        function updateProgressBar() {
+            if (!player || !player.getCurrentTime || !player.getDuration) return;
+            
+            const currentTime = player.getCurrentTime() || 0;
+            const duration = player.getDuration() || 1; // 0으로 나누기 방지
+            const progress = (currentTime / duration) * 100;
+            
+            // 프로그레스 바 업데이트
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressThumb').style.left = `${progress}%`;
+            
+            // 시간 표시 업데이트
+            document.getElementById('currentTime').textContent = formatTime(currentTime);
+            document.getElementById('totalTime').textContent = formatTime(duration);
+        }
+
+        function savePlayerState() {
+            if (player && player.getCurrentTime) {
+                playerState.currentTime = player.getCurrentTime();
+                playerState.isPlaying = player.getPlayerState() === YT.PlayerState.PLAYING;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(playerState));
+            }
+        }
+
+        function playVideo() {
+            if (player && player.playVideo) {
+                player.playVideo();
+            }
+        }
+
+        function pauseVideo() {
+            if (player && player.pauseVideo) {
+                player.pauseVideo();
+            }
+        }
+        
+        function updateSongTitle(songId) {
+            const song = songs.find(s => s.id === songId);
+            if (song) {
+                document.getElementById('currentSongTitle').textContent = song.title;
+            } else {
+                document.getElementById('currentSongTitle').textContent = "알 수 없는 곡";
+            }
+        }
+        
+        function getCurrentSongIndex() {
+            const currentId = playerState.currentSongId;
+            return songs.findIndex(s => s.id === currentId);
+        }
+        
+        function prevSong() {
+            let currentIndex = getCurrentSongIndex();
+            
+            // 목록에 없는 곡이면 첫 번째 곡으로 설정
+            if (currentIndex === -1) {
+                currentIndex = 0;
+            }
+            // 이전 곡 인덱스 계산 (처음이면 마지막으로)
+            else if (currentIndex <= 0) {
+                currentIndex = songs.length - 1;
+            } else {
+                currentIndex--;
+            }
+            
+            // 곡 변경 및 자동 재생
+            playSongById(songs[currentIndex].id);
+        }
+        
+        function nextSong() {
+            let currentIndex = getCurrentSongIndex();
+            
+            // 목록에 없는 곡이면 첫 번째 곡으로 설정
+            if (currentIndex === -1) {
+                currentIndex = 0;
+            }
+            // 다음 곡 인덱스 계산 (마지막이면 처음으로)
+            else if (currentIndex >= songs.length - 1) {
+                currentIndex = 0;
+            } else {
+                currentIndex++;
+            }
+            
+            // 곡 변경 및 자동 재생
+            playSongById(songs[currentIndex].id);
+        }
+        
+        function minimizePlayer() {
+            document.getElementById('mainPlayer').classList.add('hidden');
+            document.getElementById('miniPlayer').classList.remove('hidden');
+            playerState.isMinimized = true;
+            savePlayerState();
+        }
+        
+        function expandPlayer() {
+            document.getElementById('mainPlayer').classList.remove('hidden');
+            document.getElementById('miniPlayer').classList.add('hidden');
+            playerState.isMinimized = false;
+            savePlayerState();
+        }
+        
+        // URL 변경 감지 (티스토리 내 페이지 이동)
+        function checkForUrlChange() {
+            const currentURL = location.href;
+            if (currentURL !== lastURL) {
+                lastURL = currentURL;
+                // 페이지가 바뀌었을 때 재생 상태 유지
+                if (playerState.isPlaying && player && player.playVideo) {
+                    setTimeout(() => {
+                        player.playVideo();
+                    }, 0); // 약간의 지연을 두어 페이지 전환이 완료된 후 재생
+                }
+            }
+        }
+
+        // 페이지 가시성 변경 처리
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if (player && player.getPlayerState) {
+                    playerState.isPlaying = player.getPlayerState() === YT.PlayerState.PLAYING;
+                    savePlayerState();
+                }
+            } else {
+                if (playerState.isPlaying && player && player.playVideo) {
+                    player.playVideo();
+                }
+            }
+        });
+        
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            
+            // 현재 곡 제목 설정
+            if (playerState.currentSongId) {
+                updateSongTitle(playerState.currentSongId);
+            }
+        };
+
+    </script>
+</body>
+</html>
   
 </head>
 
+  
 <body>
 
 <!-- 📄 블로그 -->
