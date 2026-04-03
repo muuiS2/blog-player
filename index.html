@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="margin:0; overflow:hidden;">
+
+  <!-- FC2 블로그 전체 -->
+  <iframe src="https://ourazem.blog.fc2.com/" style="
+    width:100%;
+    height:100vh;
+    border:none;
+  "></iframe>
+
+  <!-- 미니 플레이어 (최소화된 상태) -->
+  <div class="mini-player hidden" id="miniPlayer" onclick="expandPlayer()">
+    <i class="fas fa-music"></i>
+  </div>
+
+  <!-- 메인 BGM 플레이어 -->
+  <div class="bgm-wrapper" id="mainPlayer">
+    <div class="bgm-player">
+      <button class="minimize-btn" onclick="minimizePlayer()">
+        <i class="fas fa-minus"></i>
+      </button>
+      <div id="player"></div>
+
+      <div class="current-song-title" id="currentSongTitle">곡을 선택해주세요</div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-thumb" id="progressThumb"></div>
+        </div>
+        <div class="time-display">
+          <span id="currentTime">0:00</span>
+          <span id="totalTime">0:00</span>
+        </div>
+      </div>
+
+      <div class="control-buttons">
+        <button class="control-btn" onclick="prevSong()" title="이전 곡">
+          <i class="fas fa-step-backward"></i>
+        </button>
+        <button class="control-btn" onclick="playVideo()" title="재생">
+          <i class="fas fa-play"></i>
+        </button>
+        <button class="control-btn" onclick="pauseVideo()" title="일시정지">
+          <i class="fas fa-pause"></i>
+        </button>
+        <button class="control-btn" onclick="nextSong()" title="다음 곡">
+          <i class="fas fa-step-forward"></i>
+        </button>
+      </div>
+
+      <div class="volume-control">
+        <i class="fas fa-volume-down"></i>
+        <input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider">
+        <i class="fas fa-volume-up"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- 시메지 -->
+  <img id="shimeji" src="" style="
+    position: fixed;
+    width: 120px;
+    left: 100px;
+    top: 100px;
+    z-index: 9999;
+    cursor: grab;
+  ">
+
+  <script src="script.js"></script>
+</body>
+
+</html>

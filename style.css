@@ -1,0 +1,204 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
+body {
+  margin: 0;
+  overflow: hidden;
+  -ms-overflow-style: none;
+  font-family: 'Pretendard Variable';
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* - - - 색상 변경 - -  */
+:root {
+  --bgm-main: #F5F5F5;
+  --bgm-mdark: #D4D4D4;
+  --bgm-mdark2: #E6E6E6;
+  --bgm-bright: #FFFFFF;
+  --bgm-font: #8F8F8F;
+}
+
+/* BGM 플레이어 */
+.bgm-wrapper {
+  z-index: 999;
+  transition: 0.5s;
+  visibility: visible;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.bgm-player {
+  position: relative;
+  background: var(--bgm-main);
+  padding: 20px 25px;
+  border-radius: 8px;
+}
+
+.player-title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: var(--bgm-font);
+}
+
+.control-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 10px;
+  margin-top: -8px;
+}
+
+.control-btn {
+  background-color: white;
+  color: var(--bgm-font);
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 10px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.control-btn:hover {
+  background-color: var(--bgm-mdark);
+  color: white;
+  transform: scale(1.1);
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--bgm-mdark);
+  scale: 0.8;
+  margin-left: -5px;
+}
+
+.volume-slider {
+  flex-grow: 1;
+  height: 5px;
+  -webkit-appearance: none;
+  background: var(--bgm-mdark2);
+  outline: none;
+  border-radius: 3px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--bgm-mdark);
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--bgm-mdark);
+  cursor: pointer;
+}
+
+.minimize-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: var(--bgm-font);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.mini-player {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bgm-mdark);
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  z-index: 999;
+  visibility: visible;
+  font-size: 12px;
+}
+
+.current-song-title {
+  background-color: white;
+  color: var(--bgm-font);
+  padding: 4px;
+  border-radius: 30px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hidden {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+}
+
+#player {
+  display: none;
+}
+
+/* 프로그레스바 */
+.progress-container {
+  margin-bottom: 15px;
+  padding: 0 10px;
+  position: relative;
+  scale: 1.1;
+}
+
+.progress-bar {
+  height: 5px;
+  background: var(--bgm-mdark2);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--bgm-mdark);
+  width: 0;
+  border-radius: 3px;
+  transition: width 0.1s;
+}
+
+.progress-thumb {
+  width: 5px;
+  height: 5px;
+  background: var(--bgm-bright);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.time-display {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: var(--bgm-font);
+  margin-top: 3px;
+}
