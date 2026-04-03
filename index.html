@@ -2,76 +2,147 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+  <title>nostalgia room...</title>
+  <link rel="icon" href="https://i.imgur.com/RuGTMsY.png">
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+}
 
-<body style="margin:0; overflow:hidden;">
+.blog-frame {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+}
 
-<link rel="stylesheet" href="style.css">
-<script src="script.js"></script>
-  
-<!-- 🎵 유튜브 플레이어 (고정) -->
-<iframe 
-  src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1&playlist=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq"
-  style="
-    position:fixed;
-    top:50%;
-    right:20px;
-    transform:translateY(-50%);
-    width:220px;
-    height:124px;
-    border:none;
-    z-index:9999;
-  "
-  allow="autoplay"
-></iframe>
+/* 🎧 플레이어 */
+.player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
 
-<!-- 📄 FC2 블로그 전체 -->
-<iframe 
-  src="https://ourazem.blog.fc2.com/"
-  style="
-    width:100%;
-    height:100vh;
-    border:none;
-  ">
-</iframe>
+  background: rgba(220, 220, 220, 0.75); /* 반투명 */
 
-</body>
-</html>
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 9999;
+  transition: 0.3s;
+  color: #555;
 
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.player.open {
+  width: 260px;
+  height: 260px;
+  border-radius: 15px;
+
+  background: rgba(220, 220, 220, 0.85);
+}
+
+/* 버튼 */
+.toggle {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* 내용 */
+.content {
+  display: none;
+  padding: 10px;
+}
+
+.player.open .content {
+  display: block;
+}
+
+/* 유튜브 */
+.player iframe {
+  width: 100%;
+  height: 150px;
+  border: none;
+  border-radius: 8px;
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  margin-top: 5px;
+  width: 100%;
+  background: #cfcfcf;
+  color: #444;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- 📄 블로그 -->
+<iframe src="https://ourazem.blog.fc2.com/" class="blog-frame"></iframe>
+
+<!-- 🎧 플레이어 -->
+<div class="player" id="player">
+
+  <div class="toggle" onclick="togglePlayer()">♬</div>
+
+  <div class="content">
+
+    <iframe 
+      src="https://www.youtube.com/embed/videoseries?list=PLaIrSWYs1VRGNj0M9FTlSk3vVAagIHBPq&autoplay=1&mute=0&loop=1"
+      allow="autoplay">
+    </iframe>
+
+    <button class="close-btn" onclick="togglePlayer()">닫기</button>
+
+  </div>
+</div>
+
+
+ <!-- 시메지 --> 
 <img id="shimeji" src="" style="
   position: fixed;
   width: 120px;
   left: 100px;
   top: 100px;
   z-index: 9999;
-  pointer-events: none;
+  cursor: grab;
 ">
 
 <script>
-// 🎨 이미지 설정 (완전한 구조로 다시 정리)
+// 🎨 이미지 설정
 const sprites = {
-  down: [
-    "https://i.imgur.com/5JH2HqN.png",
-    "https://i.imgur.com/9IpmQaN.png",
-    "https://i.imgur.com/FJh2LPr.png"
+  down: ["https://i.imgur.com/5JH2HqN.png","https://i.imgur.com/9IpmQaN.png","https://i.imgur.com/FJh2LPr.png"],
+  up: ["https://i.imgur.com/Rp4MyTo.png","https://i.imgur.com/dqR3wTc.png","https://i.imgur.com/sT4sYoE.png"],
+  left: ["https://i.imgur.com/AvUePs9.png","https://i.imgur.com/IIzugPg.png","https://i.imgur.com/gfhylI8.png"],
+  right: ["https://i.imgur.com/dAudV3g.png","https://i.imgur.com/wHNO6s0.png","https://i.imgur.com/eiulE3a.png"],
+
+  sit: ["https://i.imgur.com/9va1waE.png"],
+  sleep: [
+    "https://i.imgur.com/X080JsG.png",
+    "https://i.imgur.com/xf11w31.png",
+    "https://i.imgur.com/DuInk1S.png",
+    "https://i.imgur.com/xOfN292.png",
+    "https://i.imgur.com/cPNTADo.png"
   ],
-  up: [
-    "https://i.imgur.com/eiulE3a.png",
-    "https://i.imgur.com/dAudV3g.png",
-    "https://i.imgur.com/wHNO6s0.png"
-  ],
-  left: [
-    "https://i.imgur.com/Rp4MyTo.png",
-    "https://i.imgur.com/dqR3wTc.png",
-    "https://i.imgur.com/sT4sYoE.png"
-  ],
-  right: [
-    "https://i.imgur.com/gfhylI8.png",
-    "https://i.imgur.com/AvUePs9.png",
-    "https://i.imgur.com/IIzugPg.png"
-  ]
+
+  struggle: ["https://i.imgur.com/eSQvjZg.png","https://i.imgur.com/EjO1hB6.png"],
+  fall: ["https://i.imgur.com/nSgLstM.png"]
 };
 
-// 🔥 이미지 미리 로딩 (깜빡임 해결)
+// 🔥 preload
 Object.values(sprites).flat().forEach(src => {
   const img = new Image();
   img.src = src;
@@ -83,20 +154,29 @@ let x = 100;
 let y = 100;
 
 let dir = "right";
+let prevDir = "right";
 let frame = 0;
 let state = "walk";
 
-// 🔥 방향 유지 시간
 let dirTimer = 0;
+let dragging = false;
 
-// 🎲 랜덤 방향
+// 😴 sleep 전용
+let sleepFrame = 0;
+let sleepStarted = false;
+
+let turnDelay = 5;
+
+// 🎲 방향
 function randomDir() {
   const dirs = ["up","down","left","right"];
   return dirs[Math.floor(Math.random()*4)];
 }
 
-// 🎲 상태 + 방향 관리
+// 🎲 상태 변경
 function randomState() {
+  if (dragging) return;
+
   dirTimer--;
 
   if (dirTimer <= 0) {
@@ -104,21 +184,51 @@ function randomState() {
     dirTimer = Math.floor(Math.random() * 100) + 50;
   }
 
-  if (Math.random() < 0.01) {
-    state = (state === "walk") ? "idle" : "walk";
+  if (Math.random() < 0.005) {
+    state = "sit";
+    setTimeout(() => state = "sleep", 2000);
+  }
+
+  if (Math.random() < 0.01 && state !== "sleep") {
+    state = "walk";
+  }
+
+  // sleep 종료 시 초기화
+  if (state !== "sleep") {
+    sleepStarted = false;
   }
 }
 
 // 🎮 이동
 function move() {
+
+  // 방향 바뀌면 프레임 초기화
+ if (dir !== prevDir) {
+  frame = 0;
+  prevDir = dir;
+  turnDelay = 5; // ⭐ 방향 바뀌면 잠깐 멈춤
+}
+
+  if (dragging) {
+    frame++;
+    el.src = sprites.struggle[frame % 2];
+    return;
+  }
+
   if (state === "walk") {
 
+    if (turnDelay > 0) {
+  turnDelay--;
+  el.src = sprites[dir][0]; // 정지 이미지
+  return;
+    }
+    
     if (dir === "right") x += 1;
     if (dir === "left") x -= 1;
     if (dir === "down") y += 1;
     if (dir === "up") y -= 1;
 
-    // 🧱 벽 충돌 시 방향 전환
+    // 벽 충돌
     if (x <= 0) dir = "right";
     if (x >= window.innerWidth - 120) dir = "left";
     if (y <= 0) dir = "down";
@@ -127,20 +237,91 @@ function move() {
     el.style.left = x + "px";
     el.style.top = y + "px";
 
-    // 🦶 걷기 애니메이션
     frame++;
-    let f = frame % 3;
-    el.src = sprites[dir][f];
+    el.src = sprites[dir][frame % 3];
   }
 
-  if (state === "idle") {
-    el.src = sprites[dir][0]; // 정지 이미지
+  if (state === "sit") {
+    el.src = sprites.sit[0];
+  }
+
+  if (state === "sleep") {
+
+    if (!sleepStarted) {
+      sleepFrame = 0;
+      sleepStarted = true;
+      el.src = sprites.sleep[0];
+      return;
+    }
+
+    frame++;
+
+    if (frame % 15 === 0) {
+
+      if (sleepFrame < 2) {
+        sleepFrame++;
+      } else {
+        sleepFrame++;
+        if (sleepFrame >= 5) sleepFrame = 2;
+      }
+
+      el.src = sprites.sleep[sleepFrame];
+    }
   }
 
   randomState();
 }
 
-// ⏱ 실행
-setInterval(move, 120);
-</script>
+// 🖱️ 잡기
+el.onmousedown = () => {
+  dragging = true;
+  el.style.cursor = "grabbing";
+};
 
+// 🖱️ 놓기
+window.onmouseup = () => {
+  if (!dragging) return;
+
+  dragging = false;
+  el.style.cursor = "grab";
+
+  state = "fall";
+
+  let fallY = y;
+  let target = y + 200;
+
+  function falling() {
+    fallY += 5;
+    el.src = sprites.fall[0];
+    el.style.top = fallY + "px";
+
+    if (fallY < target) {
+      requestAnimationFrame(falling);
+    } else {
+      y = fallY;
+      state = "walk";
+    }
+  }
+
+  falling();
+};
+
+// 🖱️ 드래그 이동
+window.onmousemove = (e) => {
+  if (!dragging) return;
+
+  x = e.clientX - 60;
+  y = e.clientY - 60;
+
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+};
+
+// ▶ 실행
+setInterval(move, 120);
+
+// 🎵 플레이어 버튼 (반드시 따로!)
+function togglePlayer() {
+  document.getElementById("player").classList.toggle("open");
+}
+</script>
